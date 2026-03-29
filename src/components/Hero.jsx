@@ -51,7 +51,7 @@ function NodeCanvas() {
     offscreen.width = sW;
     offscreen.height = sH;
     const ctx = offscreen.getContext('2d');
-    const fontSize = Math.max(40, Math.min(sW * 0.14, 80));
+    const fontSize = Math.max(28, Math.min(sW * 0.08, 52));
     ctx.font = `700 ${fontSize}px Arial, Helvetica, sans-serif`;
     ctx.fillStyle = '#000';
     ctx.textAlign = 'center';
@@ -83,7 +83,7 @@ function NodeCanvas() {
         y: cy + Math.sin(angle) * radius,
         vx: (Math.random() - 0.5) * 0.3,
         vy: (Math.random() - 0.5) * 0.3,
-        radius: Math.random() * 2 + 1.5,
+        radius: Math.random() * 2 + 2.5,
         targetX: null,
         targetY: null,
         orbitAngle: Math.random() * Math.PI * 2,
@@ -131,7 +131,7 @@ function NodeCanvas() {
       s.longPressTimer = setTimeout(() => {
         // Long press: form text
         if (s.isPressed) {
-          const points = getTextPoints('hello', s.width, s.height);
+          const points = getTextPoints('hello world', s.width, s.height); // long-press default
           if (points.length === 0) return;
 
           // Ensure enough nodes
@@ -142,7 +142,7 @@ function NodeCanvas() {
               x: cx + (Math.random() - 0.5) * 100,
               y: cy + (Math.random() - 0.5) * 100,
               vx: 0, vy: 0,
-              radius: Math.random() * 2 + 1.5,
+              radius: Math.random() * 2 + 2.5,
               targetX: null, targetY: null,
               orbitAngle: Math.random() * Math.PI * 2,
               orbitSpeed: (Math.random() - 0.5) * 0.008,
@@ -209,7 +209,7 @@ function NodeCanvas() {
       }
     };
 
-    const triggerHello = () => {
+    const triggerText = (text) => {
       // Toggle: if already forming/formed, scatter back
       if (s.mode === 'forming' || s.mode === 'formed') {
         s.mode = 'dispersing';
@@ -222,13 +222,13 @@ function NodeCanvas() {
         return;
       }
       if (s.clusterTimer) { clearTimeout(s.clusterTimer); s.clusterTimer = null; }
-      const points = getTextPoints('hello', s.width, s.height);
+      const points = getTextPoints(text, s.width, s.height);
       if (points.length === 0) return;
       while (s.nodes.length < points.length) {
         const cx = s.width / 2, cy = s.height / 2;
         s.nodes.push({
           x: cx + (Math.random() - 0.5) * 100, y: cy + (Math.random() - 0.5) * 100,
-          vx: 0, vy: 0, radius: Math.random() * 2 + 1.5,
+          vx: 0, vy: 0, radius: Math.random() * 2 + 2.5,
           targetX: null, targetY: null,
           orbitAngle: Math.random() * Math.PI * 2,
           orbitSpeed: (Math.random() - 0.5) * 0.008,
@@ -254,7 +254,11 @@ function NodeCanvas() {
     };
 
     const onKeyDown = (e) => {
-      if (e.key.toLowerCase() === 'h' && !e.repeat) triggerHello();
+      if (e.repeat) return;
+      const key = e.key.toLowerCase();
+      if (key === 'h') triggerText('hello world');
+      else if (key === 'p') triggerText('python');
+      else if (key === 's') triggerText('SQL');
     };
 
     const onTouchStart = (e) => { e.preventDefault(); startPress(); };
@@ -320,6 +324,11 @@ function NodeCanvas() {
         node.y = Math.max(0, Math.min(s.height, node.y));
       });
 
+      // Theme-aware colors
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const nodeRGB = isDark ? '245,245,247' : '29,29,31';
+      const hintColor = isDark ? 'rgba(161,161,166,0.5)' : 'rgba(110,110,115,0.4)';
+
       // Draw connections
       const connDist = (mode === 'formed' || mode === 'forming') ? 25 + 20*(1-t) : 80;
       ctx.lineWidth = 0.5;
@@ -331,7 +340,7 @@ function NodeCanvas() {
           const dist = Math.sqrt(dx*dx + dy*dy);
           if (dist < connDist) {
             const alpha = (1 - dist / connDist) * ((mode === 'formed') ? 0.35 : 0.12);
-            ctx.strokeStyle = `rgba(29,29,31,${alpha})`;
+            ctx.strokeStyle = `rgba(${nodeRGB},${alpha})`;
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -345,7 +354,7 @@ function NodeCanvas() {
         const inFormation = (mode === 'forming' || mode === 'formed') && node.targetX !== null;
         const alpha = inFormation ? 0.5 + 0.5*t : 0.3;
         const r = inFormation ? node.radius * (0.9 + 0.3*t) : node.radius;
-        ctx.fillStyle = `rgba(29,29,31,${alpha})`;
+        ctx.fillStyle = `rgba(${nodeRGB},${alpha})`;
         ctx.beginPath();
         ctx.arc(node.x, node.y, r, 0, Math.PI*2);
         ctx.fill();
@@ -353,7 +362,7 @@ function NodeCanvas() {
 
       // Hint
       if (mode === 'cluster') {
-        ctx.fillStyle = 'rgba(110,110,115,0.4)';
+        ctx.fillStyle = hintColor;
         ctx.font = '500 11px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('click · hold · H key for a surprise', s.width/2, s.height - 24);

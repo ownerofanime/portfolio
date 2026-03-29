@@ -1,5 +1,16 @@
 export const experience = [
   {
+    role: "Data Annotator",
+    org: "SuperAnnotate · Part-time",
+    location: "Singapore · Remote",
+    period: "Mar 2026 – Present",
+    current: true,
+    bullets: [
+      "Working part-time as a data annotator and AI trainer on creative projects and beneficiaries",
+      "Applying prompt engineering skills to improve AI model outputs and quality",
+    ],
+  },
+  {
     role: "Events Director",
     org: "SMU Data Science & Analytics Society",
     location: "Singapore",

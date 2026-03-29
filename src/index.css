@@ -13,6 +13,192 @@
   --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+[data-theme="dark"] {
+  --bg: #0A0A0A;
+  --bg-secondary: #1C1C1E;
+  --fg: #F5F5F7;
+  --fg-mid: #A1A1A6;
+  --fg-faint: #6E6E73;
+  --border: #38383A;
+  --black: #000000;
+  --white: #FFFFFF;
+}
+
+/* ── Theme Transition ── */
+body,
+.nav,
+.card,
+.hero-stat,
+.cert-card,
+.contact-link,
+.timeline-dot,
+.skill-bar,
+.tag,
+.cert-tab,
+.filter-tab,
+.form-group input,
+.form-group textarea {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── Dark Mode Overrides ── */
+[data-theme="dark"] .nav.scrolled {
+  background: rgba(10,10,10,0.88);
+}
+
+[data-theme="dark"] .btn-primary {
+  background: #F5F5F7;
+  color: #0A0A0A;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: #D8D8DC;
+}
+
+[data-theme="dark"] .mobile-menu {
+  background: #000;
+}
+
+[data-theme="dark"] .hero-stat {
+  background: #1C1C1E;
+}
+
+[data-theme="dark"] .card {
+  background: #1C1C1E;
+}
+
+[data-theme="dark"] .card:hover {
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+}
+
+[data-theme="dark"] .skill-bar {
+  background: #38383A;
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group textarea {
+  background: #1C1C1E;
+}
+
+[data-theme="dark"] .lightbox-content {
+  background: #1C1C1E;
+}
+
+[data-theme="dark"] .filter-tab.active {
+  color: #0A0A0A;
+  background: #F5F5F7;
+  border-bottom-color: #F5F5F7;
+}
+
+[data-theme="dark"] .cert-tab.active {
+  background: #F5F5F7;
+  color: #0A0A0A;
+  border-color: #F5F5F7;
+}
+
+[data-theme="dark"] .nav-links a.active {
+  border-bottom-color: #F5F5F7;
+}
+
+[data-theme="dark"] .timeline-dot {
+  border-color: #F5F5F7;
+  background: #0A0A0A;
+}
+
+[data-theme="dark"] .timeline-dot.current {
+  background: #F5F5F7;
+}
+
+[data-theme="dark"] .footer {
+  background: #000;
+}
+
+[data-theme="dark"] .footer-links a:hover {
+  color: #F5F5F7;
+}
+
+[data-theme="dark"] .form-success {
+  background: #1C1C1E;
+}
+
+[data-theme="dark"] .hero-canvas {
+  background: transparent;
+}
+
+/* ── Intro Overlay ── */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-overlay.intro-exit {
+  opacity: 0;
+  transition: opacity 0.75s ease;
+  pointer-events: none;
+}
+
+/* ── Hello words (cursive cycling) ── */
+.intro-word {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(52px, 9vw, 96px);
+  font-weight: 700;
+  color: #fff;
+  opacity: 0;
+  user-select: none;
+  animation: wordCycle 320ms ease forwards;
+  white-space: nowrap;
+}
+
+@keyframes wordCycle {
+  0%   { opacity: 0; transform: translateY(10px); }
+  18%  { opacity: 1; transform: translateY(0); }
+  78%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+
+/* ── MT logo ── */
+.intro-logo {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: clamp(56px, 9vw, 96px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #fff;
+  opacity: 0;
+  transform-origin: center center;
+  will-change: transform, opacity;
+  user-select: none;
+}
+
+.intro-logo.intro-logo-enter {
+  animation: introLogoIn 1.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Keep logo visible once animation is done (fly phase takes over via JS) */
+.intro-fly .intro-logo {
+  opacity: 1;
+}
+
+@keyframes introLogoIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.78);
+    filter: blur(10px);
+  }
+  50% {
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+
 /* ── Reset ── */
 *, *::before, *::after {
   margin: 0;
@@ -266,6 +452,23 @@ ul, ol {
 
 .nav-resume:hover {
   border-color: var(--fg);
+  background: var(--bg-secondary);
+}
+
+.theme-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-mid);
+  transition: color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  color: var(--fg);
   background: var(--bg-secondary);
 }
 
@@ -891,6 +1094,140 @@ ul, ol {
   padding: 24px;
 }
 
+.cert-card-scholarship {
+  border-color: #C9A84C;
+  background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, transparent 60%);
+}
+
+[data-theme="dark"] .cert-card-scholarship {
+  border-color: #C9A84C;
+  background: linear-gradient(135deg, rgba(201,168,76,0.1) 0%, transparent 60%);
+}
+
+.cert-scholarship-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.cert-scholarship-logo {
+  width: 48px;
+  height: 48px;
+  background: #CC0000;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.cert-scholarship-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg-mid);
+}
+
+.cert-scholarship-meta {
+  font-size: 12px;
+  color: var(--fg-faint);
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+
+.cert-scholarship-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  height: 120px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cert-scholarship-thumb {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border-radius: 0;
+}
+
+.cert-scholarship-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.3s var(--ease);
+}
+
+.cert-card:hover .cert-scholarship-thumb img {
+  transform: scale(1.04);
+}
+
+/* ── Lightbox image wrap + nav ── */
+.lightbox-img-wrap {
+  position: relative;
+  z-index: 0;
+}
+
+.lightbox-img-wrap img {
+  width: 100%;
+  display: block;
+  border-radius: 12px 12px 0 0;
+}
+
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 1;
+  line-height: 1;
+}
+
+.lightbox-arrow:hover {
+  background: rgba(0,0,0,0.8);
+}
+
+.lightbox-arrow-prev { left: 12px; }
+.lightbox-arrow-next { right: 12px; }
+
+.lightbox-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+}
+
+.lightbox-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.45);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.lightbox-dot.active {
+  background: #fff;
+}
+
 .cert-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.06);
@@ -908,6 +1245,11 @@ ul, ol {
   font-weight: 700;
   color: var(--fg-mid);
   margin-bottom: 16px;
+}
+
+.cert-monogram-pdf {
+  color: #E25C3A;
+  background: rgba(226, 92, 58, 0.08);
 }
 
 .cert-issuer {
@@ -935,6 +1277,11 @@ ul, ol {
   font-size: 12px;
   font-weight: 600;
   color: var(--fg);
+}
+
+.cert-thumb-badge img {
+  object-fit: contain !important;
+  padding: 12px;
 }
 
 .cert-thumb {
@@ -1004,7 +1351,7 @@ ul, ol {
   justify-content: center;
   cursor: pointer;
   border: none;
-  z-index: 1;
+  z-index: 10;
   transition: background 0.2s;
 }
 

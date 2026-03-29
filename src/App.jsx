@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
+import Intro from './components/Intro';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -9,8 +12,11 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 export default function App() {
+  const [introVisible, setIntroVisible] = useState(true);
+
   return (
-    <>
+    <ThemeProvider>
+      {introVisible && <Intro onDone={() => setIntroVisible(false)} />}
       <Nav />
       <Hero />
       <About />
@@ -20,6 +26,6 @@ export default function App() {
       <Certifications />
       <Contact />
       <Footer />
-    </>
+    </ThemeProvider>
   );
 }
