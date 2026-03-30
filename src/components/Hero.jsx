@@ -400,7 +400,11 @@ export default function Hero() {
       <div className={`hero-split ${visible ? 'hero-entered' : ''}`}>
         <div className="hero-left">
           <div className="hero-row hero-row-1">
-            <p className="hero-tagline">Information Systems · SMU Undergrad · Developer</p>
+            <div className="hero-availability">
+              <span className="hero-availability-dot" />
+              Open to data internships · Available May 2025
+            </div>
+            <p className="hero-tagline">Data Analyst · AI Evaluator · Builder</p>
           </div>
           <div className="hero-row hero-row-2">
             <h1 className="hero-name">Matthew<br/>Tjandera</h1>

@@ -70,15 +70,17 @@ export default function Intro({ onDone }) {
     logo.style.opacity = '0';
 
     const exitTimer = setTimeout(() => setPhase('exit'), 1050);
-    const doneTimer = setTimeout(() => {
+    return () => clearTimeout(exitTimer);
+  }, [phase]);
+
+  // Fade overlay out then unmount
+  useEffect(() => {
+    if (phase !== 'exit') return;
+    const timer = setTimeout(() => {
       document.body.style.overflow = '';
       onDone();
-    }, 1800);
-
-    return () => {
-      clearTimeout(exitTimer);
-      clearTimeout(doneTimer);
-    };
+    }, 750);
+    return () => clearTimeout(timer);
   }, [phase, onDone]);
 
   return (

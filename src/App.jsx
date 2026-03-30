@@ -20,8 +20,8 @@ export default function App() {
       <Nav />
       <Hero />
       <About />
-      <Projects />
       <Experience />
+      <Projects />
       <Skills />
       <Certifications />
       <Contact />

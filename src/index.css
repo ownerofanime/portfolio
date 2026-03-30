@@ -136,7 +136,7 @@ body,
   justify-content: center;
 }
 
-.intro-overlay.intro-exit {
+.intro-overlay.intro-phase-exit {
   opacity: 0;
   transition: opacity 0.75s ease;
   pointer-events: none;
@@ -179,7 +179,7 @@ body,
 }
 
 /* Keep logo visible once animation is done (fly phase takes over via JS) */
-.intro-fly .intro-logo {
+.intro-phase-fly .intro-logo {
   opacity: 1;
 }
 
@@ -218,7 +218,7 @@ body {
   line-height: 1.7;
   color: var(--fg);
   background: var(--bg);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body.nav-open {
@@ -440,6 +440,12 @@ ul, ol {
   border-bottom-color: var(--black);
 }
 
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .nav-resume {
   font-size: 13px;
   font-weight: 600;
@@ -587,6 +593,31 @@ ul, ol {
   line-height: 0.92;
   color: var(--fg);
   margin-bottom: 20px;
+}
+
+.hero-availability {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fg-mid);
+  margin-bottom: 10px;
+}
+
+.hero-availability-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34C759;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(52, 199, 89, 0.25);
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(52, 199, 89, 0.25); }
+  50%       { box-shadow: 0 0 0 5px rgba(52, 199, 89, 0.08); }
 }
 
 .hero-tagline {

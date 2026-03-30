@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { skills } from '../data/skills';
 
 const columns = [
-  { key: 'development', label: 'Development' },
   { key: 'data', label: 'Data & Analytics' },
+  { key: 'development', label: 'Development' },
   { key: 'tools', label: 'Tools & Soft Skills' },
 ];
 

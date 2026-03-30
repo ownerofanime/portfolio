@@ -32,7 +32,7 @@ export const projects = [
     placement: "Top 10 Finalist",
     year: "2026",
     category: ["Data & ML"],
-    desc: "Voyage optimization engine for Capesize vessels. Freight calculator, vessel-cargo allocation, bunker sensitivity analysis, and AI chatbot.",
+    desc: "Cargill needed a smarter way to allocate Capesize vessels to cargo routes while minimising bunker costs. Built a voyage optimization engine in Python with a freight rate calculator, vessel-cargo allocation model, and bunker fuel sensitivity analysis — paired with an AI chatbot for non-technical operators to query recommendations in plain language. Reached Top 10 across a field of university teams.",
     stack: ["Python", "Predictive ML", "Data Analytics", "AI Chatbot"],
     github: "https://github.com/Xxdsanctuary/siriustools",
     youtube: "https://www.youtube.com/watch?v=miwZCis0xL0",
@@ -90,7 +90,7 @@ export const projects = [
     placement: "🥇 1st Place",
     year: "2026",
     category: ["Data & ML"],
-    desc: "Analytics-driven web solution identifying high-potential U.S. expansion locations for Singapore's Chengdu Bowl. Data-driven site selection with Manus AI tools.",
+    desc: "Chengdu Bowl needed a data-backed strategy to identify the highest-potential U.S. cities for expansion. Built an analytics pipeline using Manus AI to analyse demographics, competitor density, and consumer spending patterns across target markets — producing a scored site-selection ranking with supporting visualisations. Presented directly to the founding team; recommendations were adopted as input to their actual expansion planning. Won 1st place across all competing teams.",
     stack: ["Manus AI", "Data Analytics", "Site Selection", "Python"],
   },
 ];

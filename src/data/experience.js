@@ -1,13 +1,14 @@
 export const experience = [
   {
-    role: "Data Annotator",
+    role: "AI Response Evaluator & Data Annotator",
     org: "SuperAnnotate · Part-time",
     location: "Singapore · Remote",
     period: "Mar 2026 – Present",
     current: true,
     bullets: [
-      "Working part-time as a data annotator and AI trainer on creative projects and beneficiaries",
-      "Applying prompt engineering skills to improve AI model outputs and quality",
+      "Evaluate and score AI-generated UI/design responses for quality, coherence, and adherence to design principles — contributing to RLHF-style model training pipelines",
+      "Identify systematic failure patterns in model outputs and deliver structured feedback to improve LLM response quality across creative and design tasks",
+      "Apply prompt engineering techniques to benchmark model behaviour and surface edge cases in production AI systems",
     ],
   },
   {
