@@ -32,7 +32,7 @@ function NodeCanvas() {
   const canvasRef = useRef(null);
   const stateRef = useRef({
     nodes: [],
-    mode: 'cluster',       // 'cluster' | 'dispersing' | 'forming' | 'formed'
+    mode: 'cluster',
     clusterCenter: { x: 0, y: 0 },
     formProgress: 0,
     longPressTimer: null,
@@ -121,44 +121,30 @@ function NodeCanvas() {
     window.addEventListener('resize', resize);
 
     const startPress = () => {
-      // Cancel any pending cluster-reset from a previous short click
-      if (s.clusterTimer) {
-        clearTimeout(s.clusterTimer);
-        s.clusterTimer = null;
-      }
+      if (s.clusterTimer) { clearTimeout(s.clusterTimer); s.clusterTimer = null; }
       s.isPressed = true;
-      // Short click: just disperse then regroup
       s.longPressTimer = setTimeout(() => {
-        // Long press: form text
         if (s.isPressed) {
-          const points = getTextPoints('hello world', s.width, s.height); // long-press default
+          const points = getTextPoints('hello world', s.width, s.height);
           if (points.length === 0) return;
-
-          // Ensure enough nodes
           while (s.nodes.length < points.length) {
-            const cx = s.width / 2;
-            const cy = s.height / 2;
+            const cx = s.width / 2, cy = s.height / 2;
             s.nodes.push({
               x: cx + (Math.random() - 0.5) * 100,
               y: cy + (Math.random() - 0.5) * 100,
-              vx: 0, vy: 0,
-              radius: Math.random() * 2 + 2.5,
+              vx: 0, vy: 0, radius: Math.random() * 2 + 2.5,
               targetX: null, targetY: null,
               orbitAngle: Math.random() * Math.PI * 2,
               orbitSpeed: (Math.random() - 0.5) * 0.008,
               orbitRadius: Math.random() * Math.min(s.width, s.height) * 0.25,
             });
           }
-
-          // Assign targets using greedy nearest-neighbor
           const used = new Set();
           points.forEach((pt) => {
-            let bestDist = Infinity;
-            let bestIdx = 0;
+            let bestDist = Infinity, bestIdx = 0;
             for (let i = 0; i < s.nodes.length; i++) {
               if (used.has(i)) continue;
-              const dx = s.nodes[i].x - pt.x;
-              const dy = s.nodes[i].y - pt.y;
+              const dx = s.nodes[i].x - pt.x, dy = s.nodes[i].y - pt.y;
               const d = dx * dx + dy * dy;
               if (d < bestDist) { bestDist = d; bestIdx = i; }
             }
@@ -166,15 +152,7 @@ function NodeCanvas() {
             s.nodes[bestIdx].targetX = pt.x;
             s.nodes[bestIdx].targetY = pt.y;
           });
-
-          // Nodes without targets get null
-          s.nodes.forEach((n, i) => {
-            if (!used.has(i)) {
-              n.targetX = null;
-              n.targetY = null;
-            }
-          });
-
+          s.nodes.forEach((n, i) => { if (!used.has(i)) { n.targetX = null; n.targetY = null; } });
           s.mode = 'forming';
           s.formProgress = 0;
         }
@@ -183,40 +161,28 @@ function NodeCanvas() {
 
     const endPress = () => {
       s.isPressed = false;
-      if (s.longPressTimer) {
-        clearTimeout(s.longPressTimer);
-        s.longPressTimer = null;
-      }
-
-      if (s.mode === 'forming' || s.mode === 'formed') {
-        // Release after long press -> scatter back to cluster
-        s.mode = 'dispersing';
-        s.nodes.forEach((n) => {
-          n.targetX = null;
-          n.targetY = null;
-          n.vx = (Math.random() - 0.5) * 3;
-          n.vy = (Math.random() - 0.5) * 3;
-        });
-        s.clusterTimer = setTimeout(() => { s.mode = 'cluster'; s.clusterTimer = null; }, 800);
-      } else if (s.mode === 'cluster') {
-        // Short click -> disperse briefly then regroup
-        s.mode = 'dispersing';
-        s.nodes.forEach((n) => {
-          n.vx = (Math.random() - 0.5) * 4;
-          n.vy = (Math.random() - 0.5) * 4;
-        });
-        s.clusterTimer = setTimeout(() => { s.mode = 'cluster'; s.clusterTimer = null; }, 1200);
-      }
-    };
-
-    const triggerText = (text) => {
-      // Toggle: if already forming/formed, scatter back
+      if (s.longPressTimer) { clearTimeout(s.longPressTimer); s.longPressTimer = null; }
       if (s.mode === 'forming' || s.mode === 'formed') {
         s.mode = 'dispersing';
         s.nodes.forEach((n) => {
           n.targetX = null; n.targetY = null;
           n.vx = (Math.random() - 0.5) * 3;
           n.vy = (Math.random() - 0.5) * 3;
+        });
+        s.clusterTimer = setTimeout(() => { s.mode = 'cluster'; s.clusterTimer = null; }, 800);
+      } else if (s.mode === 'cluster') {
+        s.mode = 'dispersing';
+        s.nodes.forEach((n) => { n.vx = (Math.random() - 0.5) * 4; n.vy = (Math.random() - 0.5) * 4; });
+        s.clusterTimer = setTimeout(() => { s.mode = 'cluster'; s.clusterTimer = null; }, 1200);
+      }
+    };
+
+    const triggerText = (text) => {
+      if (s.mode === 'forming' || s.mode === 'formed') {
+        s.mode = 'dispersing';
+        s.nodes.forEach((n) => {
+          n.targetX = null; n.targetY = null;
+          n.vx = (Math.random() - 0.5) * 3; n.vy = (Math.random() - 0.5) * 3;
         });
         s.clusterTimer = setTimeout(() => { s.mode = 'cluster'; s.clusterTimer = null; }, 800);
         return;
@@ -287,10 +253,8 @@ function NodeCanvas() {
           if (node.targetX !== null) {
             node.x += (node.targetX - node.x) * 0.08;
             node.y += (node.targetY - node.y) * 0.08;
-            node.vx *= 0.9;
-            node.vy *= 0.9;
+            node.vx *= 0.9; node.vy *= 0.9;
           } else {
-            // Orbit around center loosely
             node.orbitAngle += node.orbitSpeed;
             const tx = clusterCenter.x + Math.cos(node.orbitAngle) * node.orbitRadius * 1.2;
             const ty = clusterCenter.y + Math.sin(node.orbitAngle) * node.orbitRadius * 1.2;
@@ -298,38 +262,28 @@ function NodeCanvas() {
             node.y += (ty - node.y) * 0.01;
           }
         } else if (mode === 'cluster') {
-          // Orbit in cluster
           node.orbitAngle += node.orbitSpeed;
           const tx = clusterCenter.x + Math.cos(node.orbitAngle) * node.orbitRadius;
           const ty = clusterCenter.y + Math.sin(node.orbitAngle) * node.orbitRadius;
           node.x += (tx - node.x) * 0.03;
           node.y += (ty - node.y) * 0.03;
-          node.vx *= 0.95;
-          node.vy *= 0.95;
+          node.vx *= 0.95; node.vy *= 0.95;
         } else {
-          // dispersing
-          node.x += node.vx;
-          node.y += node.vy;
-          node.vx *= 0.97;
-          node.vy *= 0.97;
-          // soft bounds
+          node.x += node.vx; node.y += node.vy;
+          node.vx *= 0.97; node.vy *= 0.97;
           const pad = 20;
           if (node.x < pad) node.vx += 0.3;
           if (node.x > s.width - pad) node.vx -= 0.3;
           if (node.y < pad) node.vy += 0.3;
           if (node.y > s.height - pad) node.vy -= 0.3;
         }
-
         node.x = Math.max(0, Math.min(s.width, node.x));
         node.y = Math.max(0, Math.min(s.height, node.y));
       });
 
-      // Theme-aware colors
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const nodeRGB = isDark ? '245,245,247' : '29,29,31';
       const hintColor = isDark ? 'rgba(161,161,166,0.5)' : 'rgba(110,110,115,0.4)';
-
-      // Draw connections
       const connDist = (mode === 'formed' || mode === 'forming') ? 25 + 20*(1-t) : 80;
       ctx.lineWidth = 0.5;
 
@@ -349,7 +303,6 @@ function NodeCanvas() {
         }
       }
 
-      // Draw nodes
       nodes.forEach((node) => {
         const inFormation = (mode === 'forming' || mode === 'formed') && node.targetX !== null;
         const alpha = inFormation ? 0.5 + 0.5*t : 0.3;
@@ -360,7 +313,6 @@ function NodeCanvas() {
         ctx.fill();
       });
 
-      // Hint
       if (mode === 'cluster') {
         ctx.fillStyle = hintColor;
         ctx.font = '500 11px Inter, sans-serif';

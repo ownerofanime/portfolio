@@ -3,7 +3,7 @@ import { useTheme } from '../context/ThemeContext';
 
 const sections = ['about', 'work', 'experience', 'skills', 'certifications', 'contact'];
 
-export default function Nav() {
+export default function Nav({ onEnterPhotography }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
@@ -19,19 +19,15 @@ export default function Nav() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
         });
       },
       { rootMargin: '-40% 0px -50% 0px' }
     );
-
     sections.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
-
     return () => observer.disconnect();
   }, []);
 
@@ -72,6 +68,10 @@ export default function Nav() {
                 {item.label}
               </a>
             ))}
+            <button className="nav-photo-btn" onClick={onEnterPhotography}>
+              <span className="nav-photo-dot" />
+              Photography
+            </button>
           </div>
           <div className="nav-right">
             <a href="/Matthew_Tjandera_Resume.pdf" download className="nav-resume">
@@ -103,6 +103,12 @@ export default function Nav() {
             {item.label}
           </a>
         ))}
+        <button
+          style={{ fontSize: 22, fontWeight: 600, color: '#fff', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+          onClick={() => { setMenuOpen(false); document.body.classList.remove('nav-open'); onEnterPhotography(); }}
+        >
+          Photography ↗
+        </button>
         <a href="/Matthew_Tjandera_Resume.pdf" download style={{ fontSize: 18, color: '#6E6E73' }}>
           Resume ↗
         </a>
