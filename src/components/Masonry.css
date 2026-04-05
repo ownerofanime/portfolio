@@ -1,0 +1,28 @@
+.masonry-list {
+  position: relative;
+  width: 100%;
+}
+
+.masonry-item-wrapper {
+  position: absolute;
+  will-change: transform, width, height, opacity;
+  padding: 6px;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+}
+
+.masonry-item-wrapper > .masonry-item-img {
+  position: relative;
+  background-size: cover;
+  background-position: center center;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0px 10px 50px -10px rgba(0, 0, 0, 0.35);
+  transition: box-shadow 0.3s ease;
+}
+
+.masonry-item-wrapper:hover > .masonry-item-img {
+  box-shadow: 0px 18px 60px -8px rgba(0, 0, 0, 0.55);
+}

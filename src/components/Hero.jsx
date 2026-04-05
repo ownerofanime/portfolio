@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import ColorBends from './ColorBends';
+import TextType from './TextType';
 
 const stats = [
   { value: 1, suffix: 'st', label: 'Manus AI Hackathon' },
@@ -282,8 +284,8 @@ function NodeCanvas() {
       });
 
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      const nodeRGB = isDark ? '245,245,247' : '29,29,31';
-      const hintColor = isDark ? 'rgba(161,161,166,0.5)' : 'rgba(110,110,115,0.4)';
+      const nodeRGB = isDark ? '255,255,255' : '10,10,10';
+      const hintColor = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)';
       const connDist = (mode === 'formed' || mode === 'forming') ? 25 + 20*(1-t) : 80;
       ctx.lineWidth = 0.5;
 
@@ -293,7 +295,7 @@ function NodeCanvas() {
           const dy = nodes[i].y - nodes[j].y;
           const dist = Math.sqrt(dx*dx + dy*dy);
           if (dist < connDist) {
-            const alpha = (1 - dist / connDist) * ((mode === 'formed') ? 0.35 : 0.12);
+            const alpha = (1 - dist / connDist) * ((mode === 'formed') ? 0.5 : 0.25);
             ctx.strokeStyle = `rgba(${nodeRGB},${alpha})`;
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -305,7 +307,7 @@ function NodeCanvas() {
 
       nodes.forEach((node) => {
         const inFormation = (mode === 'forming' || mode === 'formed') && node.targetX !== null;
-        const alpha = inFormation ? 0.5 + 0.5*t : 0.3;
+        const alpha = inFormation ? 0.7 + 0.3*t : 0.55;
         const r = inFormation ? node.radius * (0.9 + 0.3*t) : node.radius;
         ctx.fillStyle = `rgba(${nodeRGB},${alpha})`;
         ctx.beginPath();
@@ -339,7 +341,7 @@ function NodeCanvas() {
   return <canvas ref={canvasRef} className="hero-canvas" />;
 }
 
-export default function Hero() {
+export default function Hero({ introComplete = false }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -349,6 +351,21 @@ export default function Hero() {
 
   return (
     <section className="hero" id="hero">
+      <div className="hero-bg">
+        <ColorBends
+          colors={["#ff5c7a", "#8a5cff", "#00ffd1"]}
+          rotation={0}
+          speed={0.2}
+          scale={1}
+          frequency={1}
+          warpStrength={1}
+          mouseInfluence={1}
+          parallax={0.5}
+          noise={0.1}
+          transparent
+          autoRotate={0}
+        />
+      </div>
       <div className={`hero-split ${visible ? 'hero-entered' : ''}`}>
         <div className="hero-left">
           <div className="hero-row hero-row-1">
@@ -359,7 +376,28 @@ export default function Hero() {
             <p className="hero-tagline">Data Analyst · AI Evaluator · Builder</p>
           </div>
           <div className="hero-row hero-row-2">
-            <h1 className="hero-name">Matthew<br/>Tjandera</h1>
+            <h1 className="hero-name">
+              <TextType
+                texts={['Matthew']}
+                typingSpeed={80}
+                loop={false}
+                start={introComplete}
+                delay={120}
+                showCursor={false}
+              />
+              <br />
+              <TextType
+                texts={['Tjandera']}
+                typingSpeed={80}
+                loop={false}
+                start={introComplete}
+                delay={840}
+                showCursor
+                cursorCharacter="|"
+                hideCursorOnDone
+                cursorBlinkDuration={0.5}
+              />
+            </h1>
           </div>
           <div className="hero-row hero-row-3">
             <p className="hero-bio">

@@ -39,7 +39,7 @@ export default function App() {
       ) : (
         <>
           <Nav onEnterPhotography={() => triggerGlitch(true)} />
-          <Hero />
+          <Hero introComplete={!introVisible} />
           <About />
           <Experience />
           <Projects />

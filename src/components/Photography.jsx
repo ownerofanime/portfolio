@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import '../photography.css';
+import BorderGlow from './BorderGlow';
+import LiquidEther from './LiquidEther';
+import Lanyard from './Lanyard';
+import Masonry from './Masonry';
 
 // ── Palette ─────────────────────────────────────
 const GENRE_COLORS = {
@@ -11,6 +13,15 @@ const GENRE_COLORS = {
   Urban:     'rgba(255,255,255,0.5)',
   Landscape: '#FFE600',
   Travel:    '#FFE600',
+};
+
+const GENRE_GLOW = {
+  Concert:   { colors: ['#FF1744', '#ff5c7a', '#ff0040'], glow: '350 90 55' },
+  Street:    { colors: ['#8899aa', '#667788', '#aabbcc'], glow: '210 20 65' },
+  Portrait:  { colors: ['#9B30FF', '#c084fc', '#7c3aed'], glow: '270 90 65' },
+  Urban:     { colors: ['#888888', '#aaaaaa', '#666666'], glow: '0 0 65' },
+  Landscape: { colors: ['#FFE600', '#fbbf24', '#f59e0b'], glow: '50 90 60' },
+  Travel:    { colors: ['#FFE600', '#f59e0b', '#38bdf8'], glow: '45 85 60' },
 };
 
 // ── Mock Data ────────────────────────────────────
@@ -231,190 +242,6 @@ function StickerLetter({ config, delay, visible }) {
   );
 }
 
-// ── 3D Orbital Scene ──────────────────────────────
-function PhotoOrbital() {
-  const mountRef = useRef(null);
-
-  useEffect(() => {
-    const mount = mountRef.current;
-    if (!mount) return;
-
-    const rect = mount.getBoundingClientRect();
-    let width = rect.width;
-    let height = rect.height;
-
-    const scene    = new THREE.Scene();
-    const camera   = new THREE.PerspectiveCamera(52, width / height, 0.1, 1000);
-    camera.position.z = 8.5;
-
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
-    mount.appendChild(renderer.domElement);
-
-    // Orbit controls — drag to rotate, auto-rotates when idle
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping    = true;
-    controls.dampingFactor    = 0.06;
-    controls.enableZoom       = false;
-    controls.enablePan        = false;
-    controls.autoRotate       = true;
-    controls.autoRotateSpeed  = 0.6;
-    controls.minPolarAngle    = 0;
-    controls.maxPolarAngle    = Math.PI;
-
-    // Lights
-    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-    const dir = new THREE.DirectionalLight(0xffffff, 1.0);
-    dir.position.set(3, 4, 5);
-    scene.add(dir);
-    const rim1 = new THREE.PointLight(0xff1744, 0.7, 18);
-    rim1.position.set(-4, -2, 3);
-    scene.add(rim1);
-    const rim2 = new THREE.PointLight(0x9b30ff, 0.5, 18);
-    rim2.position.set(3, -3, 2);
-    scene.add(rim2);
-
-    // ── 3D Emoji Face (built from geometry) ──
-    const faceDark  = new THREE.MeshStandardMaterial({ color: 0x1a0800, roughness: 0.75, metalness: 0 });
-    const faceBlush = new THREE.MeshStandardMaterial({
-      color: 0xff1744, transparent: true, opacity: 0.42,
-      roughness: 1, metalness: 0, depthWrite: false,
-    });
-
-    const faceGroup = new THREE.Group();
-
-    // Yellow body
-    const bodyGeom = new THREE.SphereGeometry(0.82, 48, 48);
-    const bodyMat  = new THREE.MeshStandardMaterial({ color: 0xffe600, roughness: 0.38, metalness: 0 });
-    faceGroup.add(new THREE.Mesh(bodyGeom, bodyMat));
-
-    // X eye — two crossed boxes
-    const makeEye = (ex, ey, ez) => {
-      const g  = new THREE.Group();
-      g.position.set(ex, ey, ez);
-      const ag = new THREE.BoxGeometry(0.30, 0.058, 0.058);
-      const a1 = new THREE.Mesh(ag, faceDark); a1.rotation.z =  Math.PI / 4;
-      const a2 = new THREE.Mesh(ag, faceDark); a2.rotation.z = -Math.PI / 4;
-      g.add(a1, a2);
-      return g;
-    };
-    faceGroup.add(makeEye(-0.27, 0.25, 0.76));
-    faceGroup.add(makeEye( 0.27, 0.25, 0.76));
-
-    // Smile — half-torus flipped to a U-curve
-    const smileGeom = new THREE.TorusGeometry(0.30, 0.048, 12, 36, Math.PI);
-    const smile = new THREE.Mesh(smileGeom, faceDark);
-    smile.position.set(0, -0.13, 0.75);
-    smile.rotation.z = Math.PI;   // rotate so arc opens upward = smile ∪
-    faceGroup.add(smile);
-
-    // Rosy cheeks — flat circles angled slightly to face forward
-    const blushGeom = new THREE.CircleGeometry(0.145, 22);
-    const lBlush = new THREE.Mesh(blushGeom, faceBlush);
-    lBlush.position.set(-0.50, 0.05, 0.64);
-    lBlush.rotation.y = -0.32;   // tilt to hug sphere curvature
-    const rBlush = new THREE.Mesh(blushGeom, faceBlush);
-    rBlush.position.set( 0.50, 0.05, 0.64);
-    rBlush.rotation.y =  0.32;
-    faceGroup.add(lBlush, rBlush);
-
-    scene.add(faceGroup);
-
-    // Glow halo — separate so it stays world-space centred
-    const glowGeom = new THREE.SphereGeometry(1.10, 32, 32);
-    const glowMat  = new THREE.MeshBasicMaterial({ color: 0xffe600, transparent: true, opacity: 0.07 });
-    const glow     = new THREE.Mesh(glowGeom, glowMat);
-    scene.add(glow);
-
-    // Orbiting shapes — 10 objects, bigger geometry, wider orbits
-    const shapes = [
-      { geom: new THREE.OctahedronGeometry(0.42, 0),           color: 0xff1744, wire: false, r: 2.1,  spd:  0.55, tilt:  0.30, spin: 0.022, ph: 0 },
-      { geom: new THREE.BoxGeometry(0.44, 0.44, 0.44),         color: 0xffe600, wire: true,  r: 2.8,  spd: -0.38, tilt: -0.50, spin: 0.015, ph: Math.PI * 0.70 },
-      { geom: new THREE.TorusGeometry(0.30, 0.10, 14, 28),     color: 0x9b30ff, wire: false, r: 2.5,  spd:  0.48, tilt:  0.80, spin: 0.025, ph: Math.PI * 1.30 },
-      { geom: new THREE.TetrahedronGeometry(0.38, 0),           color: 0xffffff, wire: true,  r: 3.3,  spd: -0.28, tilt: -0.20, spin: 0.018, ph: Math.PI * 0.40 },
-      { geom: new THREE.IcosahedronGeometry(0.34, 0),           color: 0xff1744, wire: true,  r: 1.85, spd:  0.65, tilt:  1.20, spin: 0.030, ph: Math.PI * 1.80 },
-      { geom: new THREE.DodecahedronGeometry(0.32, 0),          color: 0xffe600, wire: false, r: 3.7,  spd:  0.22, tilt: -0.70, spin: 0.012, ph: Math.PI * 0.90 },
-      { geom: new THREE.TorusKnotGeometry(0.22, 0.08, 64, 8),  color: 0xff1744, wire: false, r: 2.2,  spd: -0.50, tilt:  0.55, spin: 0.020, ph: Math.PI * 0.20 },
-      { geom: new THREE.ConeGeometry(0.28, 0.52, 5, 1),        color: 0xffffff, wire: false, r: 3.0,  spd:  0.33, tilt: -0.90, spin: 0.018, ph: Math.PI * 1.55 },
-      { geom: new THREE.CylinderGeometry(0.12, 0.12, 0.52, 6), color: 0x9b30ff, wire: true,  r: 1.6,  spd: -0.60, tilt:  0.40, spin: 0.028, ph: Math.PI * 0.60 },
-      { geom: new THREE.SphereGeometry(0.25, 6, 5),            color: 0xffe600, wire: false, r: 4.0,  spd:  0.18, tilt: -0.35, spin: 0.015, ph: Math.PI * 1.10 },
-    ];
-
-    const orbitals = shapes.map((d) => {
-      const mat = d.wire
-        ? new THREE.MeshBasicMaterial({ color: d.color, wireframe: true, transparent: true, opacity: 0.7 })
-        : new THREE.MeshStandardMaterial({ color: d.color, metalness: 0.3, roughness: 0.5, flatShading: true });
-      const mesh = new THREE.Mesh(d.geom, mat);
-      scene.add(mesh);
-      return { mesh, ...d };
-    });
-
-    // Faint orbit rings
-    shapes.forEach((d) => {
-      const pts = new THREE.EllipseCurve(0, 0, d.r, d.r, 0, Math.PI * 2).getPoints(64);
-      const rg = new THREE.BufferGeometry().setFromPoints(pts.map((p) => new THREE.Vector3(p.x, 0, p.y)));
-      const ring = new THREE.Line(rg, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.05 }));
-      ring.rotation.x = d.tilt;
-      scene.add(ring);
-    });
-
-    let animId;
-    const clock = new THREE.Clock();
-
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
-
-      // Pulse face
-      const pulse = 1 + Math.sin(t * 2) * 0.03;
-      faceGroup.scale.setScalar(pulse);
-      glow.scale.setScalar(pulse * 1.3);
-      glowMat.opacity = 0.06 + Math.sin(t * 1.5) * 0.025;
-
-      // Orbit each shape
-      orbitals.forEach((o) => {
-        const angle = t * o.spd + o.ph;
-        const x = Math.cos(angle) * o.r;
-        const z = Math.sin(angle) * o.r;
-        o.mesh.position.set(x, z * Math.sin(o.tilt), z * Math.cos(o.tilt));
-        o.mesh.rotation.x += o.spin;
-        o.mesh.rotation.y += o.spin * 0.7;
-      });
-
-      controls.update(); // applies damping + auto-rotate
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    const onResize = () => {
-      const r = mount.getBoundingClientRect();
-      width = r.width; height = r.height;
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-    };
-    window.addEventListener('resize', onResize);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      controls.dispose();
-      window.removeEventListener('resize', onResize);
-      renderer.dispose();
-      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
-      bodyGeom.dispose(); bodyMat.dispose();
-      smileGeom.dispose(); blushGeom.dispose();
-      faceDark.dispose(); faceBlush.dispose();
-      glowGeom.dispose(); glowMat.dispose();
-      shapes.forEach((d) => d.geom.dispose());
-      orbitals.forEach((o) => o.mesh.material.dispose());
-    };
-  }, []);
-
-  return <div ref={mountRef} className="photo-orbital-canvas" />;
-}
-
 // ── Photo Hero ────────────────────────────────────
 function PhotoHero() {
   const [entered, setEntered] = useState(false);
@@ -426,6 +253,27 @@ function PhotoHero() {
 
   return (
     <section id="photo-hero" className="photo-hero">
+      {/* LiquidEther background */}
+      <div className="photo-hero-bg">
+        <LiquidEther
+          colors={['#0d0014', '#FF1744', '#9B30FF', '#FFE600']}
+          mouseForce={20}
+          cursorSize={120}
+          isViscous
+          viscous={30}
+          iterationsViscous={32}
+          iterationsPoisson={32}
+          resolution={0.5}
+          isBounce={false}
+          autoDemo
+          autoSpeed={0.4}
+          autoIntensity={2.0}
+          takeoverDuration={0.25}
+          autoResumeDelay={3000}
+          autoRampDuration={0.6}
+        />
+      </div>
+
       <div className="photo-hero-split">
         {/* Left: sticker name */}
         <div className={`photo-hero-left ${entered ? 'photo-hero-entered' : ''}`}>
@@ -454,9 +302,9 @@ function PhotoHero() {
           </div>
         </div>
 
-        {/* Right: 3D orbital */}
+        {/* Right: Lanyard */}
         <div className="photo-hero-right">
-          <PhotoOrbital />
+          <Lanyard position={[0, 0, 13]} gravity={[0, -40, 0]} cardImage="/Matthew Card.png" />
         </div>
       </div>
 
@@ -536,28 +384,150 @@ function PhotoFilmstrip() {
         </span>
       </div>
       <div className="photo-filmstrip-track" ref={trackRef}>
-        {FILMSTRIP.map((photo) => (
-          <div
-            key={photo.id}
-            className="photo-filmstrip-item"
-            style={{ background: photo.gradient }}
-          >
-            <div className="photo-filmstrip-overlay">
-              <GenreTag genre={photo.genre} />
-              <div className="photo-filmstrip-meta">
-                <div className="photo-filmstrip-title">{photo.title}</div>
-                <div className="photo-filmstrip-location">{photo.location}</div>
+        {FILMSTRIP.map((photo) => {
+          const glow = GENRE_GLOW[photo.genre] || GENRE_GLOW.Street;
+          return (
+            <BorderGlow
+              key={photo.id}
+              colors={glow.colors}
+              glowColor={glow.glow}
+              backgroundColor="#0a0a0a"
+              borderRadius={0}
+              glowRadius={30}
+              glowIntensity={1}
+              coneSpread={25}
+              edgeSensitivity={25}
+              className="photo-filmstrip-glow"
+            >
+              <div
+                className="photo-filmstrip-item"
+                style={{ background: photo.gradient }}
+              >
+                <div className="photo-filmstrip-overlay">
+                  <GenreTag genre={photo.genre} />
+                  <div className="photo-filmstrip-meta">
+                    <div className="photo-filmstrip-title">{photo.title}</div>
+                    <div className="photo-filmstrip-location">{photo.location}</div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            </BorderGlow>
+          );
+        })}
       </div>
       <p className="photo-filmstrip-hint">Drag or scroll to explore →</p>
     </section>
   );
 }
 
-// ── Photo Archive Grid ─────────────────────────────
+// ── Event Galleries ──────────────────────────────────
+const EVENT_GALLERIES = [
+  {
+    label: 'Event Coverage',
+    title: 'SMU Patrons Day 2025 X Shazza',
+    images: [
+      { src: '/photography/smu-patrons-day/SCR-20260403-pzoc.jpeg', alt: 'SMU Patrons Day 2025' },
+      { src: '/photography/smu-patrons-day/SCR-20260403-pzps.jpeg', alt: 'SMU Patrons Day 2025' },
+      { src: '/photography/smu-patrons-day/SCR-20260403-pzrw.jpeg', alt: 'SMU Patrons Day 2025' },
+      { src: '/photography/smu-patrons-day/SCR-20260403-pzwl.jpeg', alt: 'SMU Patrons Day 2025 – Performance' },
+      { src: '/photography/smu-patrons-day/SCR-20260403-pzxz.jpeg', alt: 'SMU Patrons Day 2025 – Photographers' },
+      { src: '/photography/smu-patrons-day/SCR-20260403-pzzk.jpeg', alt: 'SMU Patrons Day 2025 – Shazza performing' },
+      { src: '/photography/smu-patrons-day/SCR-20260403-qabi.jpeg', alt: 'SMU Patrons Day 2025 – Shazza performing B&W' },
+      { src: '/photography/smu-patrons-day/SCR-20260403-qadd.jpeg', alt: 'SMU Patrons Day 2025 – Guitarist' },
+      { src: '/photography/smu-patrons-day/SCR-20260403-qaen.jpeg', alt: 'SMU Patrons Day 2025 – Band on stage' },
+    ],
+  },
+  {
+    label: 'Travel',
+    title: 'Europe Trip 2025',
+    images: [
+      { src: '/photography_Europe_Trip_2025/SCR-20260403-qajq.jpeg', alt: 'Europe Trip 2025' },
+      { src: '/photography_Europe_Trip_2025/SCR-20260403-qalr.png', alt: 'Europe Trip 2025' },
+      { src: '/photography_Europe_Trip_2025/SCR-20260403-qamt.jpeg', alt: 'Europe Trip 2025' },
+      { src: '/photography_Europe_Trip_2025/SCR-20260403-qanq.png', alt: 'Europe Trip 2025' },
+      { src: '/photography_Europe_Trip_2025/SCR-20260403-qaoq.png', alt: 'Europe Trip 2025' },
+      { src: '/photography_Europe_Trip_2025/SCR-20260403-qapv.png', alt: 'Europe Trip 2025' },
+      { src: '/photography_Europe_Trip_2025/SCR-20260403-qaqt.jpeg', alt: 'Europe Trip 2025' },
+      { src: '/photography_Europe_Trip_2025/SCR-20260403-qarv.jpeg', alt: 'Europe Trip 2025' },
+      { src: '/photography_Europe_Trip_2025/SCR-20260403-qasz.jpeg', alt: 'Europe Trip 2025' },
+      { src: '/photography_Europe_Trip_2025/SCR-20260403-qaup.jpeg', alt: 'Europe Trip 2025' },
+    ],
+  },
+  {
+    label: 'Travel',
+    title: 'New Zealand Trip 2025',
+    images: [
+      { src: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbgv.jpeg', alt: 'New Zealand Trip 2025' },
+      { src: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbjb.jpeg', alt: 'New Zealand Trip 2025' },
+      { src: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbku.jpeg', alt: 'New Zealand Trip 2025' },
+      { src: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbmd.jpeg', alt: 'New Zealand Trip 2025' },
+      { src: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbpl.jpeg', alt: 'New Zealand Trip 2025' },
+      { src: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbrg.jpeg', alt: 'New Zealand Trip 2025' },
+      { src: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbsi.jpeg', alt: 'New Zealand Trip 2025' },
+      { src: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbts.jpeg', alt: 'New Zealand Trip 2025' },
+      { src: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbwj.jpeg', alt: 'New Zealand Trip 2025' },
+    ],
+  },
+];
+
+function PhotoEventGallery({ label, title, images }) {
+  const headerRef = usePhotoReveal(0);
+
+  return (
+    <section className="photo-event-gallery-section">
+      <div className="photo-event-gallery-inner">
+        <div className="photo-event-gallery-header photo-reveal" ref={headerRef}>
+          <span className="photo-label">{label}</span>
+          <h2 className="photo-event-gallery-title">{title}</h2>
+        </div>
+        <div className="photo-event-gallery-grid">
+          {images.map((img, i) => (
+            <div key={i} className="photo-event-gallery-item">
+              <img src={img.src} alt={img.alt} loading="lazy" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Masonry archive items (real photos) ──────────────
+const MASONRY_ITEMS = [
+  // SMU Patrons Day
+  { id: 'm1',  img: '/photography/smu-patrons-day/SCR-20260403-pzoc.jpeg', height: 600 },
+  { id: 'm2',  img: '/photography/smu-patrons-day/SCR-20260403-pzps.jpeg', height: 440 },
+  { id: 'm3',  img: '/photography/smu-patrons-day/SCR-20260403-pzrw.jpeg', height: 660 },
+  { id: 'm4',  img: '/photography/smu-patrons-day/SCR-20260403-pzwl.jpeg', height: 480 },
+  { id: 'm5',  img: '/photography/smu-patrons-day/SCR-20260403-pzxz.jpeg', height: 560 },
+  { id: 'm6',  img: '/photography/smu-patrons-day/SCR-20260403-pzzk.jpeg', height: 400 },
+  { id: 'm7',  img: '/photography/smu-patrons-day/SCR-20260403-qabi.jpeg', height: 620 },
+  { id: 'm8',  img: '/photography/smu-patrons-day/SCR-20260403-qadd.jpeg', height: 460 },
+  { id: 'm9',  img: '/photography/smu-patrons-day/SCR-20260403-qaen.jpeg', height: 520 },
+  // Europe Trip
+  { id: 'm10', img: '/photography_Europe_Trip_2025/SCR-20260403-qajq.jpeg', height: 440 },
+  { id: 'm11', img: '/photography_Europe_Trip_2025/SCR-20260403-qalr.png',  height: 600 },
+  { id: 'm12', img: '/photography_Europe_Trip_2025/SCR-20260403-qamt.jpeg', height: 380 },
+  { id: 'm13', img: '/photography_Europe_Trip_2025/SCR-20260403-qanq.png',  height: 560 },
+  { id: 'm14', img: '/photography_Europe_Trip_2025/SCR-20260403-qaoq.png',  height: 420 },
+  { id: 'm15', img: '/photography_Europe_Trip_2025/SCR-20260403-qapv.png',  height: 640 },
+  { id: 'm16', img: '/photography_Europe_Trip_2025/SCR-20260403-qaqt.jpeg', height: 480 },
+  { id: 'm17', img: '/photography_Europe_Trip_2025/SCR-20260403-qarv.jpeg', height: 400 },
+  { id: 'm18', img: '/photography_Europe_Trip_2025/SCR-20260403-qasz.jpeg', height: 540 },
+  { id: 'm19', img: '/photography_Europe_Trip_2025/SCR-20260403-qaup.jpeg', height: 460 },
+  // New Zealand Trip
+  { id: 'm20', img: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbgv.jpeg', height: 580 },
+  { id: 'm21', img: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbjb.jpeg', height: 420 },
+  { id: 'm22', img: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbku.jpeg', height: 660 },
+  { id: 'm23', img: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbmd.jpeg', height: 440 },
+  { id: 'm24', img: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbpl.jpeg', height: 500 },
+  { id: 'm25', img: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbrg.jpeg', height: 380 },
+  { id: 'm26', img: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbsi.jpeg', height: 620 },
+  { id: 'm27', img: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbts.jpeg', height: 460 },
+  { id: 'm28', img: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbwj.jpeg', height: 540 },
+];
+
+// ── Photo Archive Grid (Masonry) ───────────────────
 function PhotoGrid() {
   const headerRef = usePhotoReveal(0);
 
@@ -565,39 +535,21 @@ function PhotoGrid() {
     <section id="photo-archive" className="photo-archive-section">
       <div className="photo-archive-inner">
         <div className="photo-archive-header">
-          <div
-            className="photo-archive-title photo-reveal"
-            ref={headerRef}
-          >
+          <div className="photo-archive-title photo-reveal" ref={headerRef}>
             The Archive
           </div>
-          <span className="photo-archive-count">{ARCHIVE.length} images</span>
+          <span className="photo-archive-count">{MASONRY_ITEMS.length} images</span>
         </div>
-        <div className="photo-archive-grid">
-          {ARCHIVE.map((photo, i) => {
-            const color = GENRE_COLORS[photo.genre] || '#fff';
-            return (
-              <div
-                key={photo.id}
-                className="photo-archive-item"
-                style={{ aspectRatio: photo.ar }}
-              >
-                <div
-                  className="photo-archive-bg"
-                  style={{ background: photo.gradient, aspectRatio: photo.ar }}
-                />
-                <div className="photo-archive-info">
-                  <span className="photo-genre-tag" style={{ color, alignSelf: 'flex-start' }}>
-                    {photo.genre}
-                  </span>
-                  <div>
-                    <div className="photo-archive-item-title">{photo.title}</div>
-                    <span className="photo-archive-item-location">{photo.location}</span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="photo-masonry-wrap">
+          <Masonry
+            items={MASONRY_ITEMS}
+            animateFrom="bottom"
+            scaleOnHover
+            hoverScale={0.97}
+            blurToFocus
+            stagger={0.03}
+            duration={0.5}
+          />
         </div>
       </div>
     </section>
@@ -768,6 +720,9 @@ export default function Photography({ onExit }) {
       <PhotoNav onExit={onExit} />
       <PhotoHero />
       <PhotoFilmstrip />
+      {EVENT_GALLERIES.map((gallery, i) => (
+        <PhotoEventGallery key={i} label={gallery.label} title={gallery.title} images={gallery.images} />
+      ))}
       <PhotoGrid />
       <PhotoStatement />
       <PhotoContact />

@@ -53,8 +53,10 @@ export default function Intro({ onDone }) {
     if (phase !== 'fly') return;
 
     const logo = logoRef.current;
-    const navLogo = document.querySelector('.nav-logo');
-    if (!logo || !navLogo) return;
+    const navLogo = document.querySelector('.pill-logo');
+    // If nav target not found, skip fly and exit gracefully
+    if (!logo) return;
+    if (!navLogo) { setPhase('exit'); return; }
 
     const from = logo.getBoundingClientRect();
     const to = navLogo.getBoundingClientRect();
