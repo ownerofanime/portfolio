@@ -1,6 +1,5 @@
 import { useReveal } from '../hooks/useReveal';
-
-const tags = ['Singapore', 'SMU IS', 'Data Builder', 'Hackathon Competitor', 'IELTS 8.0'];
+import ProfileCard from './ProfileCard';
 
 export default function About() {
   const ref = useReveal();
@@ -11,13 +10,24 @@ export default function About() {
         <div className="section-label">About</div>
         <div className="about-grid reveal" ref={ref}>
           <div className="about-photo">
-            <img src="/matthew.jpeg" alt="Matthew Tjandera" className="photo-real" />
-            <p className="photo-caption">Matthew Tjandera</p>
-            <div className="about-tags">
-              {tags.map((t) => (
-                <span key={t} className="tag">{t}</span>
-              ))}
-            </div>
+            <ProfileCard
+              avatarUrl="/new photo.png"
+              miniAvatarUrl="/favicon.svg"
+              name="Matthew Tjandera"
+              title="Information Systems @ SMU"
+              handle=""
+              status="Open to opportunities"
+              contactText="Contact Me"
+              showUserInfo
+              enableTilt={true}
+              enableMobileTilt={false}
+              behindGlowEnabled
+              behindGlowColor="hsla(271, 100%, 70%, 0.6)"
+              innerGradient="linear-gradient(145deg,hsla(271, 40%, 45%, 0.55) 0%,hsla(264, 60%, 70%, 0.27) 100%)"
+              onContactClick={() => {
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            />
           </div>
           <div className="about-text">
             <p>

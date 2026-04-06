@@ -43,7 +43,7 @@ export default function Contact() {
               ))}
             </div>
             <div style={{ marginTop: 24 }}>
-              <a href="/Matthew_Tjandera_Resume.pdf" download className="btn btn-ghost">
+              <a href="/Matthew_Tjandera_Resume (5).pdf" download className="btn btn-ghost">
                 Download Resume ↗
               </a>
             </div>

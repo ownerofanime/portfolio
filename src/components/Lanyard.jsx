@@ -173,16 +173,30 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, cardImage = null,
   const { nodes, materials } = useGLTF(cardGLB);
   const texture = useTexture(lanyardPNG);
 
-  // Front texture
+  // Custom card image — loaded only when provided, falls back to lanyard png (unused)
   const customCardTexture = useTexture(cardImage || lanyardPNG);
-  const cardMap = cardImage
-    ? (() => { customCardTexture.flipY = false; customCardTexture.colorSpace = THREE.SRGBColorSpace; return customCardTexture; })()
-    : materials.base.map;
+
+  // PlaneGeometry uses standard UV (0→1), so just set colour space — no flipY or offset needed
+  useEffect(() => {
+    if (!cardImage) return;
+    customCardTexture.colorSpace = THREE.SRGBColorSpace;
+    customCardTexture.needsUpdate = true;
+  }, [customCardTexture, cardImage]);
+
+  // Configure lanyard band texture
+  useEffect(() => {
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.needsUpdate = true;
+  }, [texture]);
 
   // Back sticker texture — built once from canvas
   const stickerTexture = useMemo(() => buildStickerTexture(), []);
 
-  const [curve] = useState(() => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]));
+  const [curve] = useState(() => {
+    const c = new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]);
+    c.curveType = 'chordal';
+    return c;
+  });
   const [dragged, drag] = useState(false);
   const [hovered, hover] = useState(false);
 
@@ -228,9 +242,6 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, cardImage = null,
     }
   });
 
-  curve.curveType = 'chordal';
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-
   return (
     <>
       <group position={[0, 4, 0]}>
@@ -248,10 +259,26 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, cardImage = null,
             onPointerUp={e => (e.target.releasePointerCapture(e.pointerId), drag(false))}
             onPointerDown={e => (e.target.setPointerCapture(e.pointerId), drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation()))))}
           >
-            {/* Front face — card image */}
+            {/* Card body — always uses the GLB's original material */}
             <mesh geometry={nodes.card.geometry}>
-              <meshPhysicalMaterial map={cardMap} map-anisotropy={16} clearcoat={isMobile ? 0 : 1} clearcoatRoughness={0.15} roughness={0.9} metalness={0.8} />
+              <meshPhysicalMaterial map={materials.base.map} map-anisotropy={16} clearcoat={isMobile ? 0 : 1} clearcoatRoughness={0.15} roughness={0.9} metalness={0.8} />
             </mesh>
+
+            {/* Front image overlay — PlaneGeometry has perfect 0→1 UV so image always fits exactly */}
+            {cardImage && (
+              <mesh position={[0, 0, CARD_D + 0.001]}>
+                <planeGeometry args={[CARD_W * 0.94, CARD_H * 0.94]} />
+                <meshPhysicalMaterial
+                  map={customCardTexture}
+                  map-anisotropy={16}
+                  clearcoat={isMobile ? 0 : 1}
+                  clearcoatRoughness={0.15}
+                  roughness={0.9}
+                  metalness={0.3}
+                  transparent
+                />
+              </mesh>
+            )}
 
             {/* Back face — sticker sheet */}
             <mesh position={[0, 0, -CARD_D]}>

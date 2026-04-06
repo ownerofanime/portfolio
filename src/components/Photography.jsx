@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import '../photography.css';
 import BorderGlow from './BorderGlow';
 import LiquidEther from './LiquidEther';
-import Lanyard from './Lanyard';
 import Masonry from './Masonry';
 
 // ── Palette ─────────────────────────────────────
@@ -257,8 +256,8 @@ function PhotoHero() {
       <div className="photo-hero-bg">
         <LiquidEther
           colors={['#0d0014', '#FF1744', '#9B30FF', '#FFE600']}
-          mouseForce={20}
-          cursorSize={120}
+          mouseForce={50}
+          cursorSize={180}
           isViscous
           viscous={30}
           iterationsViscous={32}
@@ -266,45 +265,37 @@ function PhotoHero() {
           resolution={0.5}
           isBounce={false}
           autoDemo
-          autoSpeed={0.4}
-          autoIntensity={2.0}
-          takeoverDuration={0.25}
-          autoResumeDelay={3000}
-          autoRampDuration={0.6}
+          autoSpeed={0.9}
+          autoIntensity={4.0}
+          takeoverDuration={0.2}
+          autoResumeDelay={0}
+          autoRampDuration={0}
         />
       </div>
 
-      <div className="photo-hero-split">
-        {/* Left: sticker name */}
-        <div className={`photo-hero-left ${entered ? 'photo-hero-entered' : ''}`}>
-          <p className="photo-label" style={{ marginBottom: 24, opacity: 0.5 }}>
-            Photography Portfolio
-          </p>
-          <h1 className="photo-sticker-name" aria-label="Matthew Tjandera">
-            <span className="photo-sticker-row">
-              {STICKERS_FIRST.map((cfg, i) => (
-                <StickerLetter key={`f${i}`} config={cfg} delay={80 + i * 55} visible={entered} />
-              ))}
-            </span>
-            <span className="photo-sticker-row">
-              {STICKERS_LAST.map((cfg, i) => (
-                <StickerLetter key={`l${i}`} config={cfg} delay={480 + i * 55} visible={entered} />
-              ))}
-            </span>
-          </h1>
-          <div className="photo-hero-meta" style={{ marginTop: 28 }}>
-            <span className="photo-hero-location">Singapore · Indonesia</span>
-            <div className="photo-hero-genres">
-              {['Concert', 'Street', 'Landscape', 'Portrait'].map((g) => (
-                <GenreTag key={g} genre={g} />
-              ))}
-            </div>
+      <div className={`photo-hero-center ${entered ? 'photo-hero-entered' : ''}`}>
+        <p className="photo-label" style={{ marginBottom: 24, opacity: 0.5 }}>
+          Photography Portfolio
+        </p>
+        <h1 className="photo-sticker-name" aria-label="Matthew Tjandera">
+          <span className="photo-sticker-row">
+            {STICKERS_FIRST.map((cfg, i) => (
+              <StickerLetter key={`f${i}`} config={cfg} delay={80 + i * 55} visible={entered} />
+            ))}
+          </span>
+          <span className="photo-sticker-row">
+            {STICKERS_LAST.map((cfg, i) => (
+              <StickerLetter key={`l${i}`} config={cfg} delay={480 + i * 55} visible={entered} />
+            ))}
+          </span>
+        </h1>
+        <div className="photo-hero-meta" style={{ marginTop: 28 }}>
+          <span className="photo-hero-location">Singapore · Indonesia</span>
+          <div className="photo-hero-genres">
+            {['Concert', 'Street', 'Landscape', 'Portrait'].map((g) => (
+              <GenreTag key={g} genre={g} />
+            ))}
           </div>
-        </div>
-
-        {/* Right: Lanyard */}
-        <div className="photo-hero-right">
-          <Lanyard position={[0, 0, 13]} gravity={[0, -40, 0]} cardImage="/Matthew Card.png" />
         </div>
       </div>
 
@@ -426,31 +417,160 @@ const EVENT_GALLERIES = [
     label: 'Event Coverage',
     title: 'SMU Patrons Day 2025 X Shazza',
     images: [
-      { src: '/photography/smu-patrons-day/SCR-20260403-pzoc.jpeg', alt: 'SMU Patrons Day 2025' },
-      { src: '/photography/smu-patrons-day/SCR-20260403-pzps.jpeg', alt: 'SMU Patrons Day 2025' },
-      { src: '/photography/smu-patrons-day/SCR-20260403-pzrw.jpeg', alt: 'SMU Patrons Day 2025' },
-      { src: '/photography/smu-patrons-day/SCR-20260403-pzwl.jpeg', alt: 'SMU Patrons Day 2025 – Performance' },
-      { src: '/photography/smu-patrons-day/SCR-20260403-pzxz.jpeg', alt: 'SMU Patrons Day 2025 – Photographers' },
-      { src: '/photography/smu-patrons-day/SCR-20260403-pzzk.jpeg', alt: 'SMU Patrons Day 2025 – Shazza performing' },
-      { src: '/photography/smu-patrons-day/SCR-20260403-qabi.jpeg', alt: 'SMU Patrons Day 2025 – Shazza performing B&W' },
-      { src: '/photography/smu-patrons-day/SCR-20260403-qadd.jpeg', alt: 'SMU Patrons Day 2025 – Guitarist' },
-      { src: '/photography/smu-patrons-day/SCR-20260403-qaen.jpeg', alt: 'SMU Patrons Day 2025 – Band on stage' },
+      { src: '/SMU Patrons Day/VID08871.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08873.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08876.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08878.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08880.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08881.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08882.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08883.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08884.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08885.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08890.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08891.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08894.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08907.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08908.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08910.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08911.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08912.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08913.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08914.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08917.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08920.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08929.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08932.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08938.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08941.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08946.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08948.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08951.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08959.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08962.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08963.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08966.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08973.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08980.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08992.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08993.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08994.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08997.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08998.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID08999.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09012.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09015.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09016.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09023.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09025.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09030.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09047.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09056.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09059.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09062.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09063.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09065.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09068.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09080.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09095.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09098.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09102.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09108.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09111.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09116.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09117.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09122.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09124.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09125.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09126.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09129.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09133.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09134.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09135.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09137.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09140.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09144.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09146.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09147.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09156.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09158.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09160.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09164.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09165.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09173.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09178.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09189.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09193.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09194.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09204.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09209.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09211.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09213.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09215.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09216.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09219.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09220.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09223.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09229.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09245.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09246.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09250.JPG', alt: 'SMU Patrons Day 2025' },
+      { src: '/SMU Patrons Day/VID09253.JPG', alt: 'SMU Patrons Day 2025' },
     ],
   },
   {
     label: 'Travel',
-    title: 'Europe Trip 2025',
+    title: 'Belgium & Netherlands 2025',
     images: [
-      { src: '/photography_Europe_Trip_2025/SCR-20260403-qajq.jpeg', alt: 'Europe Trip 2025' },
-      { src: '/photography_Europe_Trip_2025/SCR-20260403-qalr.png', alt: 'Europe Trip 2025' },
-      { src: '/photography_Europe_Trip_2025/SCR-20260403-qamt.jpeg', alt: 'Europe Trip 2025' },
-      { src: '/photography_Europe_Trip_2025/SCR-20260403-qanq.png', alt: 'Europe Trip 2025' },
-      { src: '/photography_Europe_Trip_2025/SCR-20260403-qaoq.png', alt: 'Europe Trip 2025' },
-      { src: '/photography_Europe_Trip_2025/SCR-20260403-qapv.png', alt: 'Europe Trip 2025' },
-      { src: '/photography_Europe_Trip_2025/SCR-20260403-qaqt.jpeg', alt: 'Europe Trip 2025' },
-      { src: '/photography_Europe_Trip_2025/SCR-20260403-qarv.jpeg', alt: 'Europe Trip 2025' },
-      { src: '/photography_Europe_Trip_2025/SCR-20260403-qasz.jpeg', alt: 'Europe Trip 2025' },
-      { src: '/photography_Europe_Trip_2025/SCR-20260403-qaup.jpeg', alt: 'Europe Trip 2025' },
+      { src: '/photos from Belgium and Netherland/1.png',    alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/1(1).png', alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/2.png',    alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/3.png',    alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/3(1).png', alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/4.png',    alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/6.png',    alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/7.png',    alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/8.png',    alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/9.png',    alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/10.png',   alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/11.png',   alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/12.png',   alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/13.png',   alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/14.png',   alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/15.png',   alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/16.png',   alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/16(1).png',alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/17.png',   alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/18.png',   alt: 'Belgium & Netherlands 2025' },
+      { src: '/photos from Belgium and Netherland/19.png',   alt: 'Belgium & Netherlands 2025' },
+    ],
+  },
+  {
+    label: 'Event Coverage',
+    title: 'Church Photos',
+    images: [
+      { src: '/church photos/SCR-20260406-kehz.jpeg', alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kejv.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-keli.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kema.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kena.jpeg', alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kenz.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-keov.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-keqc.jpeg', alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kesc.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kesy.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-ketp.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-keuk.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kevp.jpeg', alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kewv.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-keyl.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kfbs.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kfcy.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kfes.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kfgf.png',  alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kfib.jpeg', alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kfjb.jpeg', alt: 'Church Photos' },
+      { src: '/church photos/SCR-20260406-kfkp.jpeg', alt: 'Church Photos' },
     ],
   },
   {
@@ -470,7 +590,46 @@ const EVENT_GALLERIES = [
   },
 ];
 
-function PhotoEventGallery({ label, title, images }) {
+// ── Lightbox ──────────────────────────────────────
+function Lightbox({ images, startIndex, onClose }) {
+  const [index, setIndex] = useState(startIndex);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowRight') setIndex(i => (i + 1) % images.length);
+      if (e.key === 'ArrowLeft')  setIndex(i => (i - 1 + images.length) % images.length);
+    };
+    window.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [images.length, onClose]);
+
+  const current = images[index];
+
+  return (
+    <div className="lb-overlay" onClick={onClose}>
+      <button className="lb-close" onClick={onClose}>✕</button>
+      <button
+        className="lb-arrow lb-prev"
+        onClick={e => { e.stopPropagation(); setIndex(i => (i - 1 + images.length) % images.length); }}
+      >‹</button>
+      <div className="lb-content" onClick={e => e.stopPropagation()}>
+        <img className="lb-img" src={current.src || current.img} alt={current.alt || ''} />
+      </div>
+      <button
+        className="lb-arrow lb-next"
+        onClick={e => { e.stopPropagation(); setIndex(i => (i + 1) % images.length); }}
+      >›</button>
+      <div className="lb-counter">{index + 1} / {images.length}</div>
+    </div>
+  );
+}
+
+function PhotoEventGallery({ label, title, images, onOpen }) {
   const headerRef = usePhotoReveal(0);
 
   return (
@@ -482,7 +641,7 @@ function PhotoEventGallery({ label, title, images }) {
         </div>
         <div className="photo-event-gallery-grid">
           {images.map((img, i) => (
-            <div key={i} className="photo-event-gallery-item">
+            <div key={i} className="photo-event-gallery-item" onClick={() => onOpen(images, i)}>
               <img src={img.src} alt={img.alt} loading="lazy" />
             </div>
           ))}
@@ -495,26 +654,150 @@ function PhotoEventGallery({ label, title, images }) {
 // ── Masonry archive items (real photos) ──────────────
 const MASONRY_ITEMS = [
   // SMU Patrons Day
-  { id: 'm1',  img: '/photography/smu-patrons-day/SCR-20260403-pzoc.jpeg', height: 600 },
-  { id: 'm2',  img: '/photography/smu-patrons-day/SCR-20260403-pzps.jpeg', height: 440 },
-  { id: 'm3',  img: '/photography/smu-patrons-day/SCR-20260403-pzrw.jpeg', height: 660 },
-  { id: 'm4',  img: '/photography/smu-patrons-day/SCR-20260403-pzwl.jpeg', height: 480 },
-  { id: 'm5',  img: '/photography/smu-patrons-day/SCR-20260403-pzxz.jpeg', height: 560 },
-  { id: 'm6',  img: '/photography/smu-patrons-day/SCR-20260403-pzzk.jpeg', height: 400 },
-  { id: 'm7',  img: '/photography/smu-patrons-day/SCR-20260403-qabi.jpeg', height: 620 },
-  { id: 'm8',  img: '/photography/smu-patrons-day/SCR-20260403-qadd.jpeg', height: 460 },
-  { id: 'm9',  img: '/photography/smu-patrons-day/SCR-20260403-qaen.jpeg', height: 520 },
-  // Europe Trip
-  { id: 'm10', img: '/photography_Europe_Trip_2025/SCR-20260403-qajq.jpeg', height: 440 },
-  { id: 'm11', img: '/photography_Europe_Trip_2025/SCR-20260403-qalr.png',  height: 600 },
-  { id: 'm12', img: '/photography_Europe_Trip_2025/SCR-20260403-qamt.jpeg', height: 380 },
-  { id: 'm13', img: '/photography_Europe_Trip_2025/SCR-20260403-qanq.png',  height: 560 },
-  { id: 'm14', img: '/photography_Europe_Trip_2025/SCR-20260403-qaoq.png',  height: 420 },
-  { id: 'm15', img: '/photography_Europe_Trip_2025/SCR-20260403-qapv.png',  height: 640 },
-  { id: 'm16', img: '/photography_Europe_Trip_2025/SCR-20260403-qaqt.jpeg', height: 480 },
-  { id: 'm17', img: '/photography_Europe_Trip_2025/SCR-20260403-qarv.jpeg', height: 400 },
-  { id: 'm18', img: '/photography_Europe_Trip_2025/SCR-20260403-qasz.jpeg', height: 540 },
-  { id: 'm19', img: '/photography_Europe_Trip_2025/SCR-20260403-qaup.jpeg', height: 460 },
+  { id: 's1',  img: '/SMU Patrons Day/VID08871.JPG', height: 600 },
+  { id: 's2',  img: '/SMU Patrons Day/VID08873.JPG', height: 440 },
+  { id: 's3',  img: '/SMU Patrons Day/VID08876.JPG', height: 660 },
+  { id: 's4',  img: '/SMU Patrons Day/VID08878.JPG', height: 480 },
+  { id: 's5',  img: '/SMU Patrons Day/VID08880.JPG', height: 560 },
+  { id: 's6',  img: '/SMU Patrons Day/VID08881.JPG', height: 400 },
+  { id: 's7',  img: '/SMU Patrons Day/VID08882.JPG', height: 620 },
+  { id: 's8',  img: '/SMU Patrons Day/VID08883.JPG', height: 460 },
+  { id: 's9',  img: '/SMU Patrons Day/VID08884.JPG', height: 520 },
+  { id: 's10', img: '/SMU Patrons Day/VID08885.JPG', height: 580 },
+  { id: 's11', img: '/SMU Patrons Day/VID08890.JPG', height: 420 },
+  { id: 's12', img: '/SMU Patrons Day/VID08891.JPG', height: 640 },
+  { id: 's13', img: '/SMU Patrons Day/VID08894.JPG', height: 500 },
+  { id: 's14', img: '/SMU Patrons Day/VID08907.JPG', height: 560 },
+  { id: 's15', img: '/SMU Patrons Day/VID08908.JPG', height: 380 },
+  { id: 's16', img: '/SMU Patrons Day/VID08910.JPG', height: 620 },
+  { id: 's17', img: '/SMU Patrons Day/VID08911.JPG', height: 460 },
+  { id: 's18', img: '/SMU Patrons Day/VID08912.JPG', height: 540 },
+  { id: 's19', img: '/SMU Patrons Day/VID08913.JPG', height: 600 },
+  { id: 's20', img: '/SMU Patrons Day/VID08914.JPG', height: 440 },
+  { id: 's21', img: '/SMU Patrons Day/VID08917.JPG', height: 660 },
+  { id: 's22', img: '/SMU Patrons Day/VID08920.JPG', height: 480 },
+  { id: 's23', img: '/SMU Patrons Day/VID08929.JPG', height: 520 },
+  { id: 's24', img: '/SMU Patrons Day/VID08932.JPG', height: 400 },
+  { id: 's25', img: '/SMU Patrons Day/VID08938.JPG', height: 580 },
+  { id: 's26', img: '/SMU Patrons Day/VID08941.JPG', height: 620 },
+  { id: 's27', img: '/SMU Patrons Day/VID08946.JPG', height: 460 },
+  { id: 's28', img: '/SMU Patrons Day/VID08948.JPG', height: 540 },
+  { id: 's29', img: '/SMU Patrons Day/VID08951.JPG', height: 600 },
+  { id: 's30', img: '/SMU Patrons Day/VID08959.JPG', height: 420 },
+  { id: 's31', img: '/SMU Patrons Day/VID08962.JPG', height: 640 },
+  { id: 's32', img: '/SMU Patrons Day/VID08963.JPG', height: 500 },
+  { id: 's33', img: '/SMU Patrons Day/VID08966.JPG', height: 560 },
+  { id: 's34', img: '/SMU Patrons Day/VID08973.JPG', height: 380 },
+  { id: 's35', img: '/SMU Patrons Day/VID08980.JPG', height: 620 },
+  { id: 's36', img: '/SMU Patrons Day/VID08992.JPG', height: 460 },
+  { id: 's37', img: '/SMU Patrons Day/VID08993.JPG', height: 540 },
+  { id: 's38', img: '/SMU Patrons Day/VID08994.JPG', height: 600 },
+  { id: 's39', img: '/SMU Patrons Day/VID08997.JPG', height: 440 },
+  { id: 's40', img: '/SMU Patrons Day/VID08998.JPG', height: 660 },
+  { id: 's41', img: '/SMU Patrons Day/VID08999.JPG', height: 480 },
+  { id: 's42', img: '/SMU Patrons Day/VID09012.JPG', height: 520 },
+  { id: 's43', img: '/SMU Patrons Day/VID09015.JPG', height: 400 },
+  { id: 's44', img: '/SMU Patrons Day/VID09016.JPG', height: 580 },
+  { id: 's45', img: '/SMU Patrons Day/VID09023.JPG', height: 620 },
+  { id: 's46', img: '/SMU Patrons Day/VID09025.JPG', height: 460 },
+  { id: 's47', img: '/SMU Patrons Day/VID09030.JPG', height: 540 },
+  { id: 's48', img: '/SMU Patrons Day/VID09047.JPG', height: 600 },
+  { id: 's49', img: '/SMU Patrons Day/VID09056.JPG', height: 420 },
+  { id: 's50', img: '/SMU Patrons Day/VID09059.JPG', height: 640 },
+  { id: 's51', img: '/SMU Patrons Day/VID09062.JPG', height: 500 },
+  { id: 's52', img: '/SMU Patrons Day/VID09063.JPG', height: 560 },
+  { id: 's53', img: '/SMU Patrons Day/VID09065.JPG', height: 380 },
+  { id: 's54', img: '/SMU Patrons Day/VID09068.JPG', height: 620 },
+  { id: 's55', img: '/SMU Patrons Day/VID09080.JPG', height: 460 },
+  { id: 's56', img: '/SMU Patrons Day/VID09095.JPG', height: 540 },
+  { id: 's57', img: '/SMU Patrons Day/VID09098.JPG', height: 600 },
+  { id: 's58', img: '/SMU Patrons Day/VID09102.JPG', height: 440 },
+  { id: 's59', img: '/SMU Patrons Day/VID09108.JPG', height: 660 },
+  { id: 's60', img: '/SMU Patrons Day/VID09111.JPG', height: 480 },
+  { id: 's61', img: '/SMU Patrons Day/VID09116.JPG', height: 520 },
+  { id: 's62', img: '/SMU Patrons Day/VID09117.JPG', height: 400 },
+  { id: 's63', img: '/SMU Patrons Day/VID09122.JPG', height: 580 },
+  { id: 's64', img: '/SMU Patrons Day/VID09124.JPG', height: 620 },
+  { id: 's65', img: '/SMU Patrons Day/VID09125.JPG', height: 460 },
+  { id: 's66', img: '/SMU Patrons Day/VID09126.JPG', height: 540 },
+  { id: 's67', img: '/SMU Patrons Day/VID09129.JPG', height: 600 },
+  { id: 's68', img: '/SMU Patrons Day/VID09133.JPG', height: 420 },
+  { id: 's69', img: '/SMU Patrons Day/VID09134.JPG', height: 640 },
+  { id: 's70', img: '/SMU Patrons Day/VID09135.JPG', height: 500 },
+  { id: 's71', img: '/SMU Patrons Day/VID09137.JPG', height: 560 },
+  { id: 's72', img: '/SMU Patrons Day/VID09140.JPG', height: 380 },
+  { id: 's73', img: '/SMU Patrons Day/VID09144.JPG', height: 620 },
+  { id: 's74', img: '/SMU Patrons Day/VID09146.JPG', height: 460 },
+  { id: 's75', img: '/SMU Patrons Day/VID09147.JPG', height: 540 },
+  { id: 's76', img: '/SMU Patrons Day/VID09156.JPG', height: 600 },
+  { id: 's77', img: '/SMU Patrons Day/VID09158.JPG', height: 440 },
+  { id: 's78', img: '/SMU Patrons Day/VID09160.JPG', height: 660 },
+  { id: 's79', img: '/SMU Patrons Day/VID09164.JPG', height: 480 },
+  { id: 's80', img: '/SMU Patrons Day/VID09165.JPG', height: 520 },
+  { id: 's81', img: '/SMU Patrons Day/VID09173.JPG', height: 400 },
+  { id: 's82', img: '/SMU Patrons Day/VID09178.JPG', height: 580 },
+  { id: 's83', img: '/SMU Patrons Day/VID09189.JPG', height: 620 },
+  { id: 's84', img: '/SMU Patrons Day/VID09193.JPG', height: 460 },
+  { id: 's85', img: '/SMU Patrons Day/VID09194.JPG', height: 540 },
+  { id: 's86', img: '/SMU Patrons Day/VID09204.JPG', height: 600 },
+  { id: 's87', img: '/SMU Patrons Day/VID09209.JPG', height: 420 },
+  { id: 's88', img: '/SMU Patrons Day/VID09211.JPG', height: 640 },
+  { id: 's89', img: '/SMU Patrons Day/VID09213.JPG', height: 500 },
+  { id: 's90', img: '/SMU Patrons Day/VID09215.JPG', height: 560 },
+  { id: 's91', img: '/SMU Patrons Day/VID09216.JPG', height: 380 },
+  { id: 's92', img: '/SMU Patrons Day/VID09219.JPG', height: 620 },
+  { id: 's93', img: '/SMU Patrons Day/VID09220.JPG', height: 460 },
+  { id: 's94', img: '/SMU Patrons Day/VID09223.JPG', height: 540 },
+  { id: 's95', img: '/SMU Patrons Day/VID09229.JPG', height: 600 },
+  { id: 's96', img: '/SMU Patrons Day/VID09245.JPG', height: 440 },
+  { id: 's97', img: '/SMU Patrons Day/VID09246.JPG', height: 660 },
+  { id: 's98', img: '/SMU Patrons Day/VID09250.JPG', height: 480 },
+  { id: 's99', img: '/SMU Patrons Day/VID09253.JPG', height: 520 },
+  // Belgium & Netherlands
+  { id: 'b1',  img: '/photos from Belgium and Netherland/1.png',    height: 600 },
+  { id: 'b2',  img: '/photos from Belgium and Netherland/1(1).png', height: 440 },
+  { id: 'b3',  img: '/photos from Belgium and Netherland/2.png',    height: 560 },
+  { id: 'b4',  img: '/photos from Belgium and Netherland/3.png',    height: 420 },
+  { id: 'b5',  img: '/photos from Belgium and Netherland/3(1).png', height: 640 },
+  { id: 'b6',  img: '/photos from Belgium and Netherland/4.png',    height: 480 },
+  { id: 'b7',  img: '/photos from Belgium and Netherland/6.png',    height: 580 },
+  { id: 'b8',  img: '/photos from Belgium and Netherland/7.png',    height: 400 },
+  { id: 'b9',  img: '/photos from Belgium and Netherland/8.png',    height: 660 },
+  { id: 'b10', img: '/photos from Belgium and Netherland/9.png',    height: 460 },
+  { id: 'b11', img: '/photos from Belgium and Netherland/10.png',   height: 540 },
+  { id: 'b12', img: '/photos from Belgium and Netherland/11.png',   height: 600 },
+  { id: 'b13', img: '/photos from Belgium and Netherland/12.png',   height: 380 },
+  { id: 'b14', img: '/photos from Belgium and Netherland/13.png',   height: 620 },
+  { id: 'b15', img: '/photos from Belgium and Netherland/14.png',   height: 500 },
+  { id: 'b16', img: '/photos from Belgium and Netherland/15.png',   height: 560 },
+  { id: 'b17', img: '/photos from Belgium and Netherland/16.png',   height: 440 },
+  { id: 'b18', img: '/photos from Belgium and Netherland/16(1).png',height: 640 },
+  { id: 'b19', img: '/photos from Belgium and Netherland/17.png',   height: 480 },
+  { id: 'b20', img: '/photos from Belgium and Netherland/18.png',   height: 520 },
+  { id: 'b21', img: '/photos from Belgium and Netherland/19.png',   height: 600 },
+  // Church Photos
+  { id: 'c1',  img: '/church photos/SCR-20260406-kehz.jpeg', height: 560 },
+  { id: 'c2',  img: '/church photos/SCR-20260406-kejv.png',  height: 420 },
+  { id: 'c3',  img: '/church photos/SCR-20260406-keli.png',  height: 620 },
+  { id: 'c4',  img: '/church photos/SCR-20260406-kema.png',  height: 480 },
+  { id: 'c5',  img: '/church photos/SCR-20260406-kena.jpeg', height: 540 },
+  { id: 'c6',  img: '/church photos/SCR-20260406-kenz.png',  height: 400 },
+  { id: 'c7',  img: '/church photos/SCR-20260406-keov.png',  height: 660 },
+  { id: 'c8',  img: '/church photos/SCR-20260406-keqc.jpeg', height: 440 },
+  { id: 'c9',  img: '/church photos/SCR-20260406-kesc.png',  height: 580 },
+  { id: 'c10', img: '/church photos/SCR-20260406-kesy.png',  height: 460 },
+  { id: 'c11', img: '/church photos/SCR-20260406-ketp.png',  height: 500 },
+  { id: 'c12', img: '/church photos/SCR-20260406-keuk.png',  height: 380 },
+  { id: 'c13', img: '/church photos/SCR-20260406-kevp.jpeg', height: 620 },
+  { id: 'c14', img: '/church photos/SCR-20260406-kewv.png',  height: 440 },
+  { id: 'c15', img: '/church photos/SCR-20260406-keyl.png',  height: 560 },
+  { id: 'c16', img: '/church photos/SCR-20260406-kfbs.png',  height: 480 },
+  { id: 'c17', img: '/church photos/SCR-20260406-kfcy.png',  height: 420 },
+  { id: 'c18', img: '/church photos/SCR-20260406-kfes.png',  height: 600 },
+  { id: 'c19', img: '/church photos/SCR-20260406-kfgf.png',  height: 460 },
+  { id: 'c20', img: '/church photos/SCR-20260406-kfib.jpeg', height: 540 },
+  { id: 'c21', img: '/church photos/SCR-20260406-kfjb.jpeg', height: 400 },
+  { id: 'c22', img: '/church photos/SCR-20260406-kfkp.jpeg', height: 520 },
   // New Zealand Trip
   { id: 'm20', img: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbgv.jpeg', height: 580 },
   { id: 'm21', img: '/photography_New_Zealand_Trip_2025/SCR-20260403-qbjb.jpeg', height: 420 },
@@ -528,8 +811,9 @@ const MASONRY_ITEMS = [
 ];
 
 // ── Photo Archive Grid (Masonry) ───────────────────
-function PhotoGrid() {
+function PhotoGrid({ onOpen }) {
   const headerRef = usePhotoReveal(0);
+  const masonryImages = MASONRY_ITEMS.map(item => ({ src: item.img, img: item.img, alt: '' }));
 
   return (
     <section id="photo-archive" className="photo-archive-section">
@@ -549,6 +833,10 @@ function PhotoGrid() {
             blurToFocus
             stagger={0.03}
             duration={0.5}
+            onItemClick={(item) => {
+              const idx = MASONRY_ITEMS.findIndex(m => m.id === item.id);
+              onOpen(masonryImages, idx);
+            }}
           />
         </div>
       </div>
@@ -627,6 +915,16 @@ function PhotoContact() {
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="photo-contact-link">
               <span className="photo-contact-link-type">Instagram</span>
               @matthewtjandera
+            </a>
+          </div>
+          <div style={{ marginTop: 24 }}>
+            <a
+              href="/Matthew Photography Portofolio (2).pdf"
+              download
+              className="photo-submit-btn"
+              style={{ display: 'inline-block', textDecoration: 'none' }}
+            >
+              Download Portfolio ↗
             </a>
           </div>
         </div>
@@ -715,18 +1013,40 @@ function PhotoFooter({ onExit }) {
 
 // ── Main Export ────────────────────────────────────
 export default function Photography({ onExit }) {
+  const [lightbox, setLightbox] = useState(null); // { images, index }
+
+  const openLightbox = useCallback((images, index) => {
+    setLightbox({ images, index });
+  }, []);
+
+  const closeLightbox = useCallback(() => {
+    setLightbox(null);
+  }, []);
+
   return (
     <div className="photo-world">
       <PhotoNav onExit={onExit} />
       <PhotoHero />
-      <PhotoFilmstrip />
       {EVENT_GALLERIES.map((gallery, i) => (
-        <PhotoEventGallery key={i} label={gallery.label} title={gallery.title} images={gallery.images} />
+        <PhotoEventGallery
+          key={i}
+          label={gallery.label}
+          title={gallery.title}
+          images={gallery.images}
+          onOpen={openLightbox}
+        />
       ))}
-      <PhotoGrid />
+      <PhotoGrid onOpen={openLightbox} />
       <PhotoStatement />
       <PhotoContact />
       <PhotoFooter onExit={onExit} />
+      {lightbox && (
+        <Lightbox
+          images={lightbox.images}
+          startIndex={lightbox.index}
+          onClose={closeLightbox}
+        />
+      )}
     </div>
   );
 }
