@@ -157,12 +157,12 @@ export default function ColorBends({
 
     const renderer = new THREE.WebGLRenderer({
       antialias: false,
-      powerPreference: 'high-performance',
+      powerPreference: 'default',
       alpha: true
     });
     rendererRef.current = renderer;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1));
     renderer.setClearColor(0x000000, transparent ? 0 : 1);
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
@@ -170,6 +170,10 @@ export default function ColorBends({
     container.appendChild(renderer.domElement);
 
     const clock = new THREE.Clock();
+    let lastFrame = 0;
+    const TARGET_FPS = 30;
+    const FRAME_INTERVAL = 1000 / TARGET_FPS;
+    let paused = false;
 
     const handleResize = () => {
       const w = container.clientWidth || 1;
@@ -188,7 +192,21 @@ export default function ColorBends({
       window.addEventListener('resize', handleResize);
     }
 
-    const loop = () => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { paused = !entry.isIntersecting; },
+      { threshold: 0 }
+    );
+    observer.observe(container);
+
+    const handleVisibility = () => { if (document.hidden) paused = true; else paused = false; };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    const loop = (ts) => {
+      rafRef.current = requestAnimationFrame(loop);
+      if (paused || document.hidden) return;
+      if (ts - lastFrame < FRAME_INTERVAL) return;
+      lastFrame = ts;
+
       const dt = clock.getDelta();
       const elapsed = clock.elapsedTime;
       material.uniforms.uTime.value = elapsed;
@@ -205,12 +223,13 @@ export default function ColorBends({
       cur.lerp(tgt, amt);
       material.uniforms.uPointer.value.copy(cur);
       renderer.render(scene, camera);
-      rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
 
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibility);
       if (resizeObserverRef.current) resizeObserverRef.current.disconnect();
       else window.removeEventListener('resize', handleResize);
       geometry.dispose();

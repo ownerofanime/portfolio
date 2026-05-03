@@ -73,7 +73,7 @@ function NodeCanvas() {
   }, []);
 
   const initNodes = useCallback((w, h) => {
-    const count = Math.min(180, Math.floor((w * h) / 3000));
+    const count = Math.min(70, Math.floor((w * h) / 8000));
     const cx = w / 2;
     const cy = h / 2;
     const nodes = [];
@@ -121,6 +121,20 @@ function NodeCanvas() {
 
     resize();
     window.addEventListener('resize', resize);
+
+    const TARGET_FPS = 30;
+    const FRAME_INTERVAL = 1000 / TARGET_FPS;
+    let lastFrame = 0;
+    let canvasPaused = false;
+
+    const handleVisibility = () => { canvasPaused = document.hidden; };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    const viewObserver = new IntersectionObserver(
+      ([entry]) => { canvasPaused = !entry.isIntersecting; },
+      { threshold: 0 }
+    );
+    viewObserver.observe(canvas);
 
     const startPress = () => {
       if (s.clusterTimer) { clearTimeout(s.clusterTimer); s.clusterTimer = null; }
@@ -236,7 +250,11 @@ function NodeCanvas() {
     document.addEventListener('touchend', endPress);
     window.addEventListener('keydown', onKeyDown);
 
-    const draw = () => {
+    const draw = (ts) => {
+      animId = requestAnimationFrame(draw);
+      if (canvasPaused || document.hidden) return;
+      if (ts - lastFrame < FRAME_INTERVAL) return;
+      lastFrame = ts;
       ctx.clearRect(0, 0, s.width, s.height);
       const { nodes, mode, clusterCenter } = s;
 
@@ -321,8 +339,6 @@ function NodeCanvas() {
         ctx.textAlign = 'center';
         ctx.fillText('click · hold · H key for a surprise', s.width/2, s.height - 24);
       }
-
-      animId = requestAnimationFrame(draw);
     };
 
     animId = requestAnimationFrame(draw);
@@ -330,6 +346,8 @@ function NodeCanvas() {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      viewObserver.disconnect();
       canvas.removeEventListener('mousedown', startPress);
       document.removeEventListener('mouseup', endPress);
       canvas.removeEventListener('touchstart', onTouchStart);
@@ -339,6 +357,11 @@ function NodeCanvas() {
   }, [initNodes, getTextPoints]);
 
   return <canvas ref={canvasRef} className="hero-canvas" />;
+}
+
+function getAvailableMonth() {
+  const now = new Date();
+  return now.toLocaleString('default', { month: 'long' }) + ' ' + now.getFullYear();
 }
 
 export default function Hero({ introComplete = false }) {
@@ -371,7 +394,7 @@ export default function Hero({ introComplete = false }) {
           <div className="hero-row hero-row-1">
             <div className="hero-availability">
               <span className="hero-availability-dot" />
-              Open to data internships · Available May 2025
+              Open to data internships · Available {getAvailableMonth()}
             </div>
             <p className="hero-tagline">Data Analyst · AI Evaluator · Builder</p>
           </div>

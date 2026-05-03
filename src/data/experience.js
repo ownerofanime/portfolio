@@ -1,13 +1,34 @@
 export const experience = [
   {
-    role: "AI Response Evaluator & Data Annotator",
+    role: "SMU VIVACE Web Tech & Marketing Associate",
+    org: "SMU SMUSA",
+    location: "Singapore",
+    period: "Apr 2026 – Present",
+    current: true,
+    bullets: [
+      "Building and designing the official website for SMU Vivace 2026, the largest annual CCA recruitment event at SMU serving 10,000+ incoming freshmen each academic year",
+      "Managing the web presence and digital marketing strategy for the event",
+    ],
+  },
+  {
+    role: "Teaching Assistant — CB3601 Global Perspectives on Contemporary Issues",
+    org: "Singapore Management University",
+    location: "Singapore",
+    period: "Mar 2026 – Present",
+    current: true,
+    bullets: [
+      "Supporting the teaching team for SMU's Global Perspectives on Contemporary Issues course — taking class participation notes, fielding student questions, and assisting with course facilitation",
+    ],
+  },
+  {
+    role: "Data Annotator & AI Evaluator",
     org: "SuperAnnotate · Part-time",
     location: "Singapore · Remote",
     period: "Mar 2026 – Present",
     current: true,
     bullets: [
       "Evaluate and score AI-generated UI/design responses for quality, coherence, and adherence to design principles — contributing to RLHF-style model training pipelines",
-      "Identify systematic failure patterns in model outputs and deliver structured feedback to improve LLM response quality across creative and design tasks",
+      "Work on creative client projects to analyze and enhance AI performance in reasoning and analysis tasks",
       "Apply prompt engineering techniques to benchmark model behaviour and surface edge cases in production AI systems",
     ],
   },
@@ -18,8 +39,8 @@ export const experience = [
     period: "Jan 2026 – Present",
     current: true,
     bullets: [
-      "Organize networking and educational events for DS&A second-major students at SMU",
-      "Connect students with industry professionals and applied learning opportunities",
+      "Organized networking and educational events connecting DS&A students with industry professionals from MAS and Goldman Sachs",
+      "Connect students with applied learning opportunities and build community within the SMU DS&A second-major cohort",
     ],
   },
   {
@@ -29,8 +50,8 @@ export const experience = [
     period: "Aug 2025 – Present",
     current: true,
     bullets: [
-      "Co-led a 12-member events team; built project plans and aligned ideas into executable delivery workflows",
-      "Facilitated free education access for underprivileged youth; gathered 50+ youth participants",
+      "Supervise and delegate across a 12-member events team; create project plans and align ideas into executable delivery workflows",
+      "Facilitate free online education to underprivileged youth — 11k+ students following the program",
     ],
   },
   {

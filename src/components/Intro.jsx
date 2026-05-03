@@ -1,21 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 
 const WORDS = [
-  'Hello',       // English
-  'Halo',        // Bahasa Indonesia
-  '你好',         // Mandarin
-  'こんにちは',   // Japanese
-  '안녕하세요',   // Korean
-  'Bonjour',     // French
-  'Hola',        // Spanish
-  'Ciao',        // Italian
-  'مرحبا',       // Arabic
-  'Olá',         // Portuguese
-  'Привет',      // Russian
-  'नमस्ते',      // Hindi
+  'Hello',
+  'Halo',
+  '你好',
+  'こんにちは',
+  'Bonjour',
+  'Hola',
+  'Ciao',
 ];
 
-const WORD_DURATION = 320; // ms per word
+const WORD_DURATION = 300; // ms per word
 
 export default function Intro({ onDone }) {
   const logoRef = useRef(null);
@@ -44,7 +39,7 @@ export default function Intro({ onDone }) {
   // Hold MT logo then trigger fly
   useEffect(() => {
     if (phase !== 'logo') return;
-    const t = setTimeout(() => setPhase('fly'), 1700);
+    const t = setTimeout(() => setPhase('fly'), 850);
     return () => clearTimeout(t);
   }, [phase]);
 
@@ -67,11 +62,11 @@ export default function Intro({ onDone }) {
 
     logo.getBoundingClientRect(); // force reflow
     logo.style.transition =
-      'transform 1.1s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.45s ease 0.7s';
+      'transform 0.8s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.4s ease 0.4s';
     logo.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
     logo.style.opacity = '0';
 
-    const exitTimer = setTimeout(() => setPhase('exit'), 1050);
+    const exitTimer = setTimeout(() => setPhase('exit'), 760);
     return () => clearTimeout(exitTimer);
   }, [phase]);
 
@@ -81,7 +76,7 @@ export default function Intro({ onDone }) {
     const timer = setTimeout(() => {
       document.body.style.overflow = '';
       onDone();
-    }, 750);
+    }, 400);
     return () => clearTimeout(timer);
   }, [phase, onDone]);
 

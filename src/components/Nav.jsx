@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
-const sections = ['about', 'work', 'experience', 'skills', 'certifications', 'contact'];
+const sections = ['about', 'work', 'experience', 'certifications', 'contact'];
 
 const navItems = [
-  { id: 'about',   label: 'About'   },
-  { id: 'work',    label: 'Work'    },
-  { id: 'skills',  label: 'Skills'  },
-  { id: 'contact', label: 'Contact' },
+  { id: 'about',      label: 'About'      },
+  { id: 'work',       label: 'Work'       },
+  { id: 'experience', label: 'Experience' },
+  { id: 'contact',    label: 'Contact'    },
 ];
 
 export default function Nav({ onEnterPhotography }) {
@@ -98,7 +98,7 @@ export default function Nav({ onEnterPhotography }) {
 
         {/* ── Right actions ── */}
         <div className="pill-nav-actions">
-          <a href="/Matthew_Tjandera_Resume.pdf" download className="pill-resume">
+          <a href="/Matthew_Tjandera_Resume (5).pdf" download="Matthew_Tjandera_Resume.pdf" className="pill-resume">
             Resume ↗
           </a>
           <button className="pill-theme-btn" onClick={toggle} aria-label="Toggle theme">
@@ -155,7 +155,7 @@ export default function Nav({ onEnterPhotography }) {
               </button>
             </li>
             <li>
-              <a href="/Matthew_Tjandera_Resume.pdf" download className="mobile-menu-link">
+              <a href="/Matthew_Tjandera_Resume (5).pdf" download="Matthew_Tjandera_Resume.pdf" className="mobile-menu-link">
                 Resume ↗
               </a>
             </li>

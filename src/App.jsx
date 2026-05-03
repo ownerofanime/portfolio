@@ -6,10 +6,8 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Projects from './components/Projects';
 import Experience from './components/Experience';
-import Skills from './components/Skills';
 import Certifications from './components/Certifications';
 import Contact from './components/Contact';
-import Footer from './components/Footer';
 import GlitchTransition from './components/GlitchTransition';
 import Photography from './components/Photography';
 
@@ -43,10 +41,8 @@ export default function App() {
           <About />
           <Experience />
           <Projects />
-          <Skills />
           <Certifications />
           <Contact />
-          <Footer />
         </>
       )}
     </ThemeProvider>
