@@ -75,7 +75,7 @@ export default function Projects() {
                 key={p.id}
                 colors={glow.colors}
                 glowColor={glow.glow}
-                backgroundColor="var(--white)"
+                backgroundColor="var(--bg-secondary)"
                 borderRadius={16}
                 glowRadius={30}
                 glowIntensity={0.8}
