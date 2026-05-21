@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from './context/ThemeContext';
 import Intro from './components/Intro';
 import Nav from './components/Nav';
@@ -45,6 +46,7 @@ export default function App() {
           <Contact />
         </>
       )}
+      <Analytics />
     </ThemeProvider>
   );
 }
