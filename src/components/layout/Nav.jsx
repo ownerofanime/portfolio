@@ -101,7 +101,7 @@ export default function Nav({ onEnterPhotography }) {
 
         {/* ── Right actions ── */}
         <div className="pill-nav-actions">
-          <a href="/Matthew_Tjandera_Resume (5).pdf" download="Matthew_Tjandera_Resume.pdf" className="pill-resume">
+          <a href="/matthew_resume_tech.docx" download="matthew_resume_tech.docx" className="pill-resume">
             Resume ↗
           </a>
           <button className="pill-theme-btn" onClick={toggle} aria-label="Toggle theme">
@@ -158,7 +158,7 @@ export default function Nav({ onEnterPhotography }) {
               </button>
             </li>
             <li>
-              <a href="/Matthew_Tjandera_Resume (5).pdf" download="Matthew_Tjandera_Resume.pdf" className="mobile-menu-link">
+              <a href="/matthew_resume_tech.docx" download="matthew_resume_tech.docx" className="mobile-menu-link">
                 Resume ↗
               </a>
             </li>
