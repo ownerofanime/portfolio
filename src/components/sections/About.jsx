@@ -1,5 +1,7 @@
-import { useReveal } from '../hooks/useReveal';
-import ProfileCard from './ProfileCard';
+// Section — About: personal bio, education history, and profile card.
+
+import { useReveal } from '../../hooks/useReveal';
+import ProfileCard from '../ui/ProfileCard';
 
 export default function About() {
   const ref = useReveal();

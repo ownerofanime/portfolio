@@ -1,7 +1,10 @@
+// Section — Certifications: filterable certificate gallery with zoomable image viewer.
+// Edit src/data/certifications.js to add certificates. Each entry can have a `pdf` link.
+
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { useReveal } from '../hooks/useReveal';
-import { certifications } from '../data/certifications';
-import BorderGlow from './BorderGlow';
+import { useReveal } from '../../hooks/useReveal';
+import { certifications } from '../../data/certifications';
+import BorderGlow from '../ui/BorderGlow';
 
 const tabs = ['All', 'Scholarships', 'Awards', 'Data & Python', 'Management', 'Networking', 'Languages'];
 
@@ -209,7 +212,7 @@ export default function Certifications() {
                 key={i}
                 colors={glow.colors}
                 glowColor={glow.glow}
-                backgroundColor="var(--white)"
+                backgroundColor="var(--bg-secondary)"
                 borderRadius={12}
                 glowRadius={25}
                 glowIntensity={0.8}

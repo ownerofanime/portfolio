@@ -1,3 +1,6 @@
+// UI — LogoLoop: infinitely scrolling marquee of tech stack icons.
+// Add or remove tools in the TOOLS array below.
+
 import { useEffect, useRef } from 'react';
 
 const TOOLS = [

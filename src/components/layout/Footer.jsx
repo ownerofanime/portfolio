@@ -1,3 +1,5 @@
+// Layout — Footer: site-wide footer with copyright and quick nav links.
+
 export default function Footer() {
   return (
     <footer className="footer">

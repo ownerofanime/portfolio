@@ -1,3 +1,6 @@
+// UI — ProfileCard: interactive tilt card showing avatar, name, title, and status badge.
+// Used in the About section. Supports mouse/device-tilt effects and a contact button.
+
 import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import './ProfileCard.css';
 

@@ -1,3 +1,6 @@
+// UI — BorderGlow: wraps any card with a mouse-tracking border glow effect.
+// Pass `colors` (gradient stops) and `glowColor` (HSL string) as props.
+
 import { useRef, useCallback, useEffect } from 'react';
 
 function parseHSL(hslStr) {

@@ -1,3 +1,7 @@
+// Layout — Intro: full-screen loading animation shown once on first visit.
+// Cycles through greetings in different languages, then flies the MT logo
+// to the nav bar position before fading out.
+
 import { useEffect, useRef, useState } from 'react';
 
 const WORDS = [

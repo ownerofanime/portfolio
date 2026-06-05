@@ -1,3 +1,6 @@
+// UI — TextType: animated typewriter component.
+// Pass `texts` array to cycle through phrases, control speed with `typingSpeed`/`deletingSpeed`.
+
 import { useState, useEffect, useRef } from 'react';
 
 export default function TextType({

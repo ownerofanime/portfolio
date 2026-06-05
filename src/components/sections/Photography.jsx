@@ -1,8 +1,14 @@
+// Section — Photography: a self-contained photography portfolio world.
+// Triggered by the "Photos" nav button. Has its own nav, hero, filmstrip,
+// event galleries, masonry archive, and contact form.
+// Photo data (FILMSTRIP, ARCHIVE, EVENT_GALLERIES, MASONRY_ITEMS) is defined inline
+// since it's specific to this section and not shared elsewhere.
+
 import { useState, useEffect, useRef, useCallback } from 'react';
-import '../photography.css';
-import BorderGlow from './BorderGlow';
-import LiquidEther from './LiquidEther';
-import Masonry from './Masonry';
+import '../../photography.css';
+import BorderGlow from '../ui/BorderGlow';
+import LiquidEther from '../ui/LiquidEther';
+import Masonry from '../ui/Masonry';
 
 // ── Palette ─────────────────────────────────────
 const GENRE_COLORS = {

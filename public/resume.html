@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matthew Tjandera — Resume</title>
+  <meta name="robots" content="noindex" />
+  <meta name="description" content="Resume of Matthew Tjandera — IS student at SMU, data builder, hackathon competitor." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --fg: #1D1D1F;
+      --fg-mid: #6E6E73;
+      --fg-faint: #B0B0B5;
+      --border: #E0E0E5;
+      --bg: #FFFFFF;
+      --accent: #6366f1;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--fg);
+      background: #F5F5F7;
+      min-height: 100vh;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .back-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fg-mid);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--fg); }
+
+    .topbar-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { background: #F0F0F5; }
+
+    .btn-primary {
+      background: #1D1D1F;
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: #333; }
+
+    /* ── Resume card ── */
+    .resume-wrap {
+      max-width: 820px;
+      margin: 32px auto;
+      padding: 0 24px 48px;
+    }
+
+    .resume-card {
+      background: var(--bg);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .resume-header {
+      padding: 40px 48px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .resume-name {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+      margin-bottom: 4px;
+    }
+
+    .resume-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .resume-contacts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .resume-contact-item {
+      font-size: 13px;
+      color: var(--fg-mid);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.2s;
+    }
+
+    .resume-contact-item:hover { color: var(--accent); }
+
+    /* ── Body ── */
+    .resume-body {
+      padding: 0 48px 40px;
+    }
+
+    /* ── Section ── */
+    .resume-section {
+      padding-top: 28px;
+    }
+
+    .resume-section + .resume-section {
+      border-top: 1px solid var(--border);
+      margin-top: 4px;
+    }
+
+    .resume-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg-faint);
+      margin-bottom: 16px;
+    }
+
+    /* ── Entry ── */
+    .resume-entry {
+      margin-bottom: 20px;
+    }
+
+    .resume-entry:last-child { margin-bottom: 0; }
+
+    .resume-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .resume-entry-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .resume-entry-period {
+      font-size: 12px;
+      color: var(--fg-faint);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .resume-entry-sub {
+      font-size: 13px;
+      color: var(--fg-mid);
+      margin-bottom: 6px;
+    }
+
+    .resume-bullets {
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .resume-bullets li {
+      font-size: 13px;
+      color: var(--fg-mid);
+      line-height: 1.6;
+      padding-left: 14px;
+      position: relative;
+      margin-bottom: 4px;
+    }
+
+    .resume-bullets li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      font-weight: 700;
+      color: var(--fg-faint);
+    }
+
+    /* ── Hackathon table ── */
+    .hackathon-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .hackathon-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .hackathon-row:last-child { border-bottom: none; }
+
+    .hackathon-event { font-weight: 500; color: var(--fg); }
+    .hackathon-year { color: var(--fg-faint); font-size: 12px; flex-shrink: 0; }
+    .hackathon-result { font-weight: 600; color: var(--fg-mid); flex-shrink: 0; }
+
+    .result-gold { color: #b8860b; }
+    .result-finalist { color: #6366f1; }
+
+    /* ── Skills ── */
+    .skills-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 6px 16px;
+      font-size: 13px;
+      margin-bottom: 6px;
+      align-items: baseline;
+    }
+
+    .skills-category {
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .skills-value { color: var(--fg-mid); }
+
+    /* ── Education ── */
+
+    /* ── Print ── */
+    @media print {
+      body { background: white; font-size: 11px; }
+      .topbar { display: none; }
+      .resume-wrap { margin: 0; padding: 0; max-width: 100%; }
+      .resume-card { box-shadow: none; border-radius: 0; }
+      .resume-header { padding: 24px 32px 20px; }
+      .resume-name { font-size: 24px; }
+      .resume-body { padding: 0 32px 24px; }
+      .resume-section { padding-top: 16px; }
+      .resume-entry { margin-bottom: 12px; }
+    }
+
+    @media (max-width: 640px) {
+      .resume-header, .resume-body { padding-left: 24px; padding-right: 24px; }
+      .topbar { padding: 10px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="/" class="back-link">← Portfolio</a>
+    <span class="topbar-name">Matthew Tjandera — Resume</span>
+  </div>
+  <div class="topbar-right">
+    <a href="/Matthew_Tjandera_Resume%20(5).pdf" download="Matthew_Tjandera_Resume.pdf" class="btn btn-ghost">Download PDF ↓</a>
+    <button class="btn btn-primary" onclick="window.print()">Print ↗</button>
+  </div>
+</div>
+
+<div class="resume-wrap">
+  <div class="resume-card">
+
+    <div class="resume-header">
+      <div class="resume-name">Matthew Tjandera</div>
+      <div class="resume-title">Information Systems · Singapore Management University</div>
+      <div class="resume-contacts">
+        <a href="tel:+6589806759" class="resume-contact-item">+65 8980 6759</a>
+        <a href="mailto:matthewtjandera@gmail.com" class="resume-contact-item">matthewtjandera@gmail.com</a>
+        <a href="https://linkedin.com/in/matthewtjandera" target="_blank" class="resume-contact-item">linkedin.com/in/matthewtjandera</a>
+        <a href="https://github.com/tjandera" target="_blank" class="resume-contact-item">github.com/tjandera</a>
+        <a href="https://matthewtjandera.online" target="_blank" class="resume-contact-item">matthewtjandera.online</a>
+      </div>
+    </div>
+
+    <div class="resume-body">
+
+      <!-- Education -->
+      <div class="resume-section">
+        <div class="resume-section-title">Education</div>
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <span class="resume-entry-title">Singapore Management University</span>
+            <span class="resume-entry-period">Jan 2025 – Present</span>
+          </div>
+          <div class="resume-entry-sub">Bachelor of Science (Information Systems)</div>
+          <ul class="resume-bullets">
+            <li>Relevant Coursework: Programming &amp; Computational Thinking, Data Management, Algorithms &amp; Programming, Web Application Development 1</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Work Experience -->
+      <div class="resume-section">
+        <div class="resume-section-title">Work Experience</div>
+
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <span class="resume-entry-title">Data Annotator &amp; AI Evaluator</span>
+            <span class="resume-entry-period">Mar 2026 – Present</span>
+          </div>
+          <div class="resume-entry-sub">SuperAnnotate · Part-time · Remote</div>
+          <ul class="resume-bullets">
+            <li>Evaluate AI output accuracy on a part-time project basis by annotating training data and assessing model responses across creative and analytical tasks against benchmark criteria and policies, delivering structured quality assessments and actionable written feedback to stakeholders.</li>
+          </ul>
+        </div>
+
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <span class="resume-entry-title">Web Development &amp; Marketing Associate</span>
+            <span class="resume-entry-period">Apr 2026 – Present</span>
+          </div>
+          <div class="resume-entry-sub">SMU VIVACE 2026 · Singapore</div>
+          <ul class="resume-bullets">
+            <li>Served 10,000+ incoming freshmen by designing and developing SMU VIVACE 2026's official CCA recruitment website with full mobile-responsive front-end features including a navigation map, individual CCA microsites, and an interactive home screen using HTML, CSS, and JavaScript.</li>
+          </ul>
+        </div>
+
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <span class="resume-entry-title">Director of Events</span>
+            <span class="resume-entry-period">Jan 2026 – Present</span>
+          </div>
+          <div class="resume-entry-sub">SMU Data Science &amp; Analytics Society · Singapore</div>
+          <ul class="resume-bullets">
+            <li>Directed networking and educational events for 50+ SMU Data Science students with industry professionals from MAS and Goldman Sachs by managing logistics, stakeholder coordination, and cross-team communication to deliver punctual and professionally run sessions.</li>
+          </ul>
+        </div>
+
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <span class="resume-entry-title">Deputy Events Lead</span>
+            <span class="resume-entry-period">Aug 2025 – Present</span>
+          </div>
+          <div class="resume-entry-sub">Youthspace.id · Indonesia · Remote</div>
+          <ul class="resume-bullets">
+            <li>Delivered free online education to nearly 11,000 underprivileged students across Indonesia by co-leading a 12-member events team across task delegation, project planning, and end-to-end programme delivery, while producing structured progress reports for organisational leadership.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Hackathons -->
+      <div class="resume-section">
+        <div class="resume-section-title">Hackathons &amp; Projects</div>
+
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <span class="resume-entry-title">🥇 1st Place — Manus AI × January Capital Hackathon</span>
+            <span class="resume-entry-period">2026</span>
+          </div>
+          <ul class="resume-bullets">
+            <li>Won 1st place across all competing teams by building an analytics pipeline using Manus AI to analyse U.S. market demographics, competitor density, and consumer spending patterns for Chengdu Bowl's expansion — producing a scored site-selection ranking adopted directly by the founding team's expansion planning.</li>
+          </ul>
+        </div>
+
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <span class="resume-entry-title">Top 10 Finalist — SMU BIA × Cargill Datathon 2026</span>
+            <span class="resume-entry-period">2026</span>
+          </div>
+          <ul class="resume-bullets">
+            <li>Reached Top 10 across all university teams by building a Python voyage optimisation engine with a freight rate calculator, vessel-cargo allocation model, and bunker fuel sensitivity analysis, projecting $2.21M USD total profit for Cargill's Capesize fleet allocation.</li>
+          </ul>
+        </div>
+
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <span class="resume-entry-title">Top 6 Finalist — PINUS Hack 2026 × Xtremax × Gallery 1819</span>
+            <span class="resume-entry-period">2026</span>
+          </div>
+          <ul class="resume-bullets">
+            <li>Reached Top 6 across all competing teams by designing and building an immersive AR art marketplace using LiDAR, WebXR, and an AI recommendation engine to let users place curated art at real scale in their physical space.</li>
+          </ul>
+        </div>
+
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <span class="resume-entry-title">Top 10 Finalist — SMU Tech Series 2025</span>
+            <span class="resume-entry-period">2025</span>
+          </div>
+          <ul class="resume-bullets">
+            <li>Designed and built OurReceipt, a QR-based digital receipt iOS platform targeting Singapore's 1.6M consumers to digitise transactions and eliminate paper waste.</li>
+          </ul>
+        </div>
+
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <span class="resume-entry-title">Recipient — DBS Foundation Data Scientist Program 2026</span>
+            <span class="resume-entry-period">2026</span>
+          </div>
+          <ul class="resume-bullets">
+            <li>Awarded the Online Progressive Scholarship to join the DBS Foundation Data Scientist Program Coding Camp — an applied data science and coding training programme.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div class="resume-section">
+        <div class="resume-section-title">Skills</div>
+        <div class="skills-row">
+          <span class="skills-category">Programming</span>
+          <span class="skills-value">Python (pandas, numpy, matplotlib), SQL, JavaScript, HTML, CSS</span>
+        </div>
+        <div class="skills-row">
+          <span class="skills-category">Platforms</span>
+          <span class="skills-value">VS Code, MySQL Workbench, BigQuery (Google Cloud), Git / GitHub, Linux CLI, MS Office</span>
+        </div>
+        <div class="skills-row">
+          <span class="skills-category">Languages</span>
+          <span class="skills-value">Bahasa Indonesia (Native), English (IELTS 8.0), Chinese (Basic)</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

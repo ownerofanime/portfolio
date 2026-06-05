@@ -1,3 +1,6 @@
+// UI — AnimatedList: scrollable list with keyboard navigation and fade gradients.
+// Used by the Projects section for the full hackathon record table.
+
 import { useState, useEffect, useRef, useCallback } from 'react';
 import './AnimatedList.css';
 

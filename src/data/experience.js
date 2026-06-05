@@ -1,13 +1,25 @@
+// ─────────────────────────────────────────────────────────────────────
+// Experience Data
+//
+// Each entry renders as one card in the Experience section timeline.
+// Fields:
+//   role      - job title
+//   org       - organisation name
+//   location  - city / country
+//   period    - date range string
+//   current   - true highlights the dot as active/green
+//   bullets   - array of achievement strings (use numbers and impact where possible)
+// ─────────────────────────────────────────────────────────────────────
+
 export const experience = [
   {
-    role: "SMU VIVACE Web Tech & Marketing Associate",
-    org: "SMU SMUSA",
+    role: "Web Development & Marketing Associate",
+    org: "SMU VIVACE 2026",
     location: "Singapore",
     period: "Apr 2026 – Present",
     current: true,
     bullets: [
-      "Building and designing the official website for SMU Vivace 2026, the largest annual CCA recruitment event at SMU serving 10,000+ incoming freshmen each academic year",
-      "Managing the web presence and digital marketing strategy for the event",
+      "Served 10,000+ incoming freshmen by designing and developing SMU VIVACE 2026's official CCA recruitment website with full mobile-responsive front-end features such as a map for students to navigate, each CCA's microsite, and an interactive about and home screen using HTML, CSS, and JavaScript.",
     ],
   },
   {
@@ -27,20 +39,17 @@ export const experience = [
     period: "Mar 2026 – Present",
     current: true,
     bullets: [
-      "Evaluate and score AI-generated UI/design responses for quality, coherence, and adherence to design principles — contributing to RLHF-style model training pipelines",
-      "Work on creative client projects to analyze and enhance AI performance in reasoning and analysis tasks",
-      "Apply prompt engineering techniques to benchmark model behaviour and surface edge cases in production AI systems",
+      "Evaluate AI output accuracy for stakeholders on a part-time project basis by annotating training data and assessing model responses across creative and analytical tasks against benchmark criteria and policies, delivering structured quality assessments and actionable written feedback to stakeholders.",
     ],
   },
   {
-    role: "Events Director",
+    role: "Director of Events",
     org: "SMU Data Science & Analytics Society",
     location: "Singapore",
     period: "Jan 2026 – Present",
     current: true,
     bullets: [
-      "Organized networking and educational events connecting DS&A students with industry professionals from MAS and Goldman Sachs",
-      "Connect students with applied learning opportunities and build community within the SMU DS&A second-major cohort",
+      "Directed networking and educational events for 50+ SMU Data Science students with industry professionals from organisations such as MAS and Goldman Sachs by managing events across logistics, stakeholder coordination and communication, and teamwork with the rest of the department to deliver punctual and professionally run sessions.",
     ],
   },
   {
@@ -50,8 +59,7 @@ export const experience = [
     period: "Aug 2025 – Present",
     current: true,
     bullets: [
-      "Supervise and delegate across a 12-member events team; create project plans and align ideas into executable delivery workflows",
-      "Facilitate free online education to underprivileged youth — 11k+ students following the program",
+      "Delivered free online education to nearly 11,000 underprivileged students across Indonesia by co-leading a 12-member events team across task delegation, project planning, and end-to-end programme delivery, while producing structured progress reports for organisational leadership to maintain full transparency and accountability.",
     ],
   },
   {

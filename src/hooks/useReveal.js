@@ -1,3 +1,8 @@
+// useReveal — attaches an IntersectionObserver to the returned ref.
+// When the element scrolls into view, the CSS class 'visible' is added,
+// which triggers the fade-in animation defined in index.css (.reveal.visible).
+// useRevealChildren also stagger-reveals direct children that have the class 'reveal-child'.
+
 import { useEffect, useRef } from 'react';
 
 export function useReveal(threshold = 0.15) {

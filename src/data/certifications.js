@@ -1,3 +1,17 @@
+// ─────────────────────────────────────────────────────────────────────
+// Certifications Data
+//
+// Each entry renders as one card in the Certifications section.
+// Fields:
+//   issuer    - organisation that issued the credential
+//   name      - certificate / award title
+//   category  - filter tab it appears under (must match a tab in Certifications.jsx)
+//   badge     - short label shown on the card (e.g. "Completed", "🥇 1st Place")
+//   pdf       - (optional) path to certificate PDF in /public/certs/
+//   images    - (optional) array of image paths to show in the card viewer
+//   scholarshipMeta - (optional) extra detail line for scholarship cards
+// ─────────────────────────────────────────────────────────────────────
+
 export const certifications = [
   // ── Scholarships ──────────────────────────────────────────
   {
@@ -23,6 +37,13 @@ export const certifications = [
     category: "Awards",
     badge: "🥇 1st Place",
     pdf: "/certs/IT%20related%20portofolio/Certificate%20Of%20Achievement%20Winning%20First%20Place%20In%20Video%20Editing%20Competition.pdf",
+  },
+  {
+    issuer: "GOSOFT",
+    name: "GOSOFT Retail Tech Hackathon — Finalist",
+    category: "Awards",
+    badge: "Finalist",
+    pdf: "/certs/gosoft_participation_cert.pdf",
   },
 
   // ── Data & Python ─────────────────────────────────────────
@@ -80,6 +101,12 @@ export const certifications = [
     name: "Machine Learning With Python for Beginner",
     category: "Data & Python",
     pdf: "/certs/IT%20related%20portofolio/certificate-DQLABDVIZ2RWFLLE.pdf",
+  },
+  {
+    issuer: "Dicoding",
+    name: "Data Science Fundamentals",
+    category: "Data & Python",
+    pdf: "/certs/Dicoding_data_science_cert.pdf",
   },
 
   // ── Management ────────────────────────────────────────────

@@ -1,3 +1,6 @@
+// UI — Lanyard: interactive 3D physics-based lanyard card rendered with React Three Fiber.
+// Used in the About section as a decorative profile card element.
+
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
@@ -6,8 +9,8 @@ import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphe
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 import * as THREE from 'three';
 
-import cardGLB from '../assets/lanyard/card.glb';
-import lanyardPNG from '../assets/lanyard/lanyard.png';
+import cardGLB from '../../assets/lanyard/card.glb';
+import lanyardPNG from '../../assets/lanyard/lanyard.png';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 

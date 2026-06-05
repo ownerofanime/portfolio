@@ -1,3 +1,6 @@
+// Layout — GlitchTransition: full-screen RGB glitch overlay played when
+// switching between the portfolio and the photography page.
+
 export default function GlitchTransition() {
   return (
     <div className="glitch-overlay" aria-hidden="true">

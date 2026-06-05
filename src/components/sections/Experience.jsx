@@ -1,5 +1,8 @@
-import { useReveal } from '../hooks/useReveal';
-import { experience } from '../data/experience';
+// Section — Experience: timeline of work roles with bullet descriptions.
+// Edit src/data/experience.js to add or update roles.
+
+import { useReveal } from '../../hooks/useReveal';
+import { experience } from '../../data/experience';
 
 export default function Experience() {
   const ref = useReveal();
@@ -9,6 +12,7 @@ export default function Experience() {
       <div className="container">
         <div className="section-label">Experience</div>
         <h2 className="section-title">Where I've worked.</h2>
+
         <div className="timeline reveal" ref={ref} style={{ marginTop: 48 }}>
           {experience.map((exp, i) => (
             <div key={i} className="timeline-item">

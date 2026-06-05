@@ -1,7 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
-import { useTheme } from '../context/ThemeContext';
+// Layout — Nav: sticky pill-style navigation bar with scrollspy, theme toggle, and mobile menu.
+// `sections` drives the IntersectionObserver that highlights the active nav item as you scroll.
 
-const sections = ['about', 'work', 'experience', 'certifications', 'contact'];
+import { useState, useEffect, useRef } from 'react';
+import { useTheme } from '../../context/ThemeContext';
+
+const sections = ['about', 'work', 'experience', 'skills', 'certifications', 'contact'];
 
 const navItems = [
   { id: 'about',      label: 'About'      },

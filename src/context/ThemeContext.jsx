@@ -1,3 +1,7 @@
+// ThemeContext — provides `theme` ('light' | 'dark') and `toggle()` to the whole app.
+// Persists the user's choice in localStorage and syncs the `data-theme` attribute on <html>,
+// which CSS variables in index.css use to switch between light and dark colour palettes.
+
 import { createContext, useContext, useEffect, useState } from 'react';
 
 const ThemeContext = createContext(null);

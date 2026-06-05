@@ -1,16 +1,24 @@
+// Root component — assembles all sections and manages top-level page state.
+// Handles the glitch transition animation when switching to/from Photography mode.
+
 import { useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from './context/ThemeContext';
-import Intro from './components/Intro';
-import Nav from './components/Nav';
-import Hero from './components/Hero';
-import About from './components/About';
-import Projects from './components/Projects';
-import Experience from './components/Experience';
-import Certifications from './components/Certifications';
-import Contact from './components/Contact';
-import GlitchTransition from './components/GlitchTransition';
-import Photography from './components/Photography';
+
+// ── Layout: structural shell components ──────────────────────────────
+import Intro from './components/layout/Intro';
+import Nav from './components/layout/Nav';
+import GlitchTransition from './components/layout/GlitchTransition';
+
+// ── Sections: full-page content sections (rendered in scroll order) ──
+import Hero from './components/sections/Hero';
+import About from './components/sections/About';
+import Experience from './components/sections/Experience';
+import Skills from './components/sections/Skills';
+import Projects from './components/sections/Projects';
+import Certifications from './components/sections/Certifications';
+import Contact from './components/sections/Contact';
+import Photography from './components/sections/Photography';
 
 export default function App() {
   const [introVisible, setIntroVisible] = useState(true);
@@ -41,6 +49,7 @@ export default function App() {
           <Hero introComplete={!introVisible} />
           <About />
           <Experience />
+          <Skills />
           <Projects />
           <Certifications />
           <Contact />
