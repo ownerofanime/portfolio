@@ -2,7 +2,7 @@
 // The screen is a real interactive Html overlay (via @react-three/drei <Html>).
 // Drag the body to rotate, use keyboard to interact with the terminal on screen.
 
-import { useRef, useState, useEffect, useCallback, Suspense, useMemo } from 'react';
+import { useRef, useState, useEffect, useCallback, Suspense, useMemo, Component } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Html, RoundedBox, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
@@ -109,6 +109,90 @@ function Btn3D({ position, shape = 'box', args, color, soundType, onClick }) {
   );
 }
 
+// ── D-pad procedural texture — stipple grip + convex radial shading ──────────
+function makeDPadTexture() {
+  const S = 256;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = S;
+  const ctx = cv.getContext('2d');
+
+  // Base
+  ctx.fillStyle = '#dcdcdc';
+  ctx.fillRect(0, 0, S, S);
+
+  // Convex radial gradient — lighter centre, darker rim
+  const g = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S * 0.72);
+  g.addColorStop(0,   'rgba(255,255,255,0.30)');
+  g.addColorStop(0.5, 'rgba(255,255,255,0.06)');
+  g.addColorStop(1,   'rgba(0,0,0,0.22)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, S, S);
+
+  // Offset stipple dots — staggered rows for rubber-grip feel
+  for (let row = 0; row * 7 < S; row++) {
+    const offsetX = row % 2 === 0 ? 0 : 3.5;
+    for (let col = 0; col * 7 < S; col++) {
+      const x = col * 7 + offsetX;
+      const y = row * 7;
+      ctx.beginPath();
+      ctx.arc(x + 2, y + 2, 1.1, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,0,0,0.10)';
+      ctx.fill();
+    }
+  }
+
+  // Fine cross-hair scratches (mimic injection-moulded plastic)
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i < S; i += 18) {
+    const a = 0.03 + 0.02 * Math.sin(i * 0.21);
+    ctx.strokeStyle = `rgba(255,255,255,${a})`;
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, S); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(S, i); ctx.stroke();
+  }
+
+  const tex = new THREE.CanvasTexture(cv);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(2, 2);
+  return tex;
+}
+
+// ── Single pressable D-pad arm ────────────────────────────────────────────────
+function DPadArm({ position, args, dpadTex }) {
+  const ref    = useRef();
+  const restZ  = useRef(position[2]);
+  const [dn, setDn] = useState(false);
+
+  const press = (e) => { e.stopPropagation(); setDn(true);  playRetroSound('b'); };
+  const lift  = (e) => { e?.stopPropagation?.(); setDn(false); };
+
+  useFrame(() => {
+    if (!ref.current) return;
+    const target = restZ.current + (dn ? -0.018 : 0);
+    ref.current.position.z += (target - ref.current.position.z) * 0.35;
+  });
+
+  return (
+    <group
+      ref={ref}
+      position={position}
+      onPointerDown={press}
+      onPointerUp={lift}
+      onPointerLeave={lift}
+    >
+      <RoundedBox args={args} radius={0.016} smoothness={5}>
+        <meshStandardMaterial
+          color={C.dpad}
+          map={dpadTex}
+          roughness={0.55}
+          metalness={0.04}
+          emissive={C.dpad}
+          emissiveIntensity={dn ? 0.30 : 0.03}
+        />
+      </RoundedBox>
+    </group>
+  );
+}
+
 // ── Small Html label (pointer-events off) ────────────────────────────────────
 function Label({ position, children, size = 8, color = 'rgb(158, 152, 152)' }) {
   return (
@@ -168,9 +252,19 @@ function makeBodyTexture() {
   return tex;
 }
 
+// ── Entrance animation helpers ────────────────────────────────────────────────
+const INTRO_DUR = 1.15; // seconds
+
+function easeOutBack(t) {
+  const c1 = 1.70158, c3 = c1 + 1;
+  const tt = Math.min(t, 1);
+  return 1 + c3 * Math.pow(tt - 1, 3) + c1 * Math.pow(tt - 1, 2);
+}
+
 // ── The full Game Boy mesh ────────────────────────────────────────────────────
-function GameBoyMesh() {
+function GameBoyMesh({ introComplete }) {
   const bodyTex    = useMemo(() => makeBodyTexture(), []);
+  const dpadTex    = useMemo(() => makeDPadTexture(), []);
 
   // Real PBR plastic maps from Poly Haven (CC0) — stored in /public/textures/
   const plasticRough = useTexture('/textures/plastic_rough.jpg');
@@ -185,15 +279,30 @@ function GameBoyMesh() {
     });
   }, [plasticRough, plasticNor]);
 
-  const groupRef   = useRef();
-  const drag       = useRef({ on: false, sx: 0, sy: 0, rx: 0, ry: 0 });
-  const target     = useRef({ x: 0, y: 0 });
-  const idleActive = useRef(true);
+  const groupRef    = useRef();
+  const drag        = useRef({ on: false, sx: 0, sy: 0, rx: 0, ry: 0 });
+  const target      = useRef({ x: 0, y: 0 });
+  const idleActive  = useRef(true);
+  const introStart  = useRef(null);
+  const introReady  = useRef(false);
+
+  // Only start the pop-in once the site intro has finished
+  useEffect(() => {
+    if (introComplete) introReady.current = true;
+  }, [introComplete]);
 
   // Idle float + lerped rotation toward target
   useFrame(({ clock }) => {
     const g = groupRef.current;
     if (!g) return;
+
+    // Entrance pop-in: scale from 0 → 1 with spring overshoot.
+    // Wait until the site intro overlay has finished before starting.
+    if (!introReady.current) { g.scale.setScalar(0.001); return; }
+    if (introStart.current === null) introStart.current = clock.elapsedTime;
+    const introT = Math.min((clock.elapsedTime - introStart.current) / INTRO_DUR, 1);
+    g.scale.setScalar(Math.max(0.001, easeOutBack(introT)));
+
     const t = clock.elapsedTime;
 
     if (!drag.current.on) {
@@ -269,7 +378,7 @@ function GameBoyMesh() {
       {/* z=0.109 sits just in front of bezel (0.107), no separate backing needed */}
       <Html
         transform
-        position={[0, 0.30, 0.109]}
+        position={[0.15, 0.30, 0.15]}
         scale={0.005}
         distanceFactor={400}
         zIndexRange={[10, 0]}
@@ -330,23 +439,28 @@ function GameBoyMesh() {
       </Html>
 
       {/* ── D-pad ─────────────────────────────────────────────────────────── */}
-      {/* centered at [−0.58, −0.80] in the lower-left controls zone         */}
-      <mesh position={[-0.58, -0.80, 0.109]}>
-        <boxGeometry args={[0.44, 0.145, 0.038]} />
-        <meshStandardMaterial color={C.dpad} roughness={0.85} />
-      </mesh>
-      <mesh position={[-0.58, -0.80, 0.109]}>
-        <boxGeometry args={[0.145, 0.44, 0.038]} />
-        <meshStandardMaterial color={C.dpad} roughness={0.85} />
-      </mesh>
-      <mesh position={[-0.58, -0.80, 0.113]}>
-        <boxGeometry args={[0.12, 0.12, 0.024]} />
-        <meshStandardMaterial color="#26263e" roughness={0.9} />
-      </mesh>
-      <Label position={[-0.58, -0.65, 0.117]} size={9} color="rgba(255,255,255,0.28)">▲</Label>
-      <Label position={[-0.58, -0.95, 0.117]} size={9} color="rgba(255,255,255,0.28)">▼</Label>
-      <Label position={[-0.73, -0.80, 0.117]} size={9} color="rgba(255,255,255,0.28)">◀</Label>
-      <Label position={[-0.43, -0.80, 0.117]} size={9} color="rgba(255,255,255,0.28)">▶</Label>
+      {/* Cross centred at [−0.58, −0.80]. Four separate pressable arms +     */}
+      {/* a flush centre cap. Each arm: 0.145 wide × 0.1475 long × 0.055 deep*/}
+      {/* Arm centres (from cross centre ± (0.145/2 + 0.1475/2) = ±0.14625): */}
+      <DPadArm position={[-0.58,      -0.65375, 0.109]} args={[0.145,  0.1475, 0.055]} dpadTex={dpadTex} />
+      <DPadArm position={[-0.58,      -0.94625, 0.109]} args={[0.145,  0.1475, 0.055]} dpadTex={dpadTex} />
+      <DPadArm position={[-0.72625,   -0.80,    0.109]} args={[0.1475, 0.145,  0.055]} dpadTex={dpadTex} />
+      <DPadArm position={[-0.43375,   -0.80,    0.109]} args={[0.1475, 0.145,  0.055]} dpadTex={dpadTex} />
+      {/* Centre cap — covers the junction between all four arms */}
+      <RoundedBox position={[-0.58, -0.80, 0.109]} args={[0.145, 0.145, 0.055]} radius={0.012} smoothness={4}>
+        <meshStandardMaterial
+          color="#1e1e30"
+          map={dpadTex}
+          roughness={0.88}
+          metalness={0.06}
+          emissive="#6366f1"
+          emissiveIntensity={0.07}
+        />
+      </RoundedBox>
+      <Label position={[-0.58,    -0.655, 0.143]} size={9} color="rgba(255,255,255,0.38)">▲</Label>
+      <Label position={[-0.58,    -0.944, 0.143]} size={9} color="rgba(255,255,255,0.38)">▼</Label>
+      <Label position={[-0.724,   -0.80,  0.143]} size={9} color="rgba(255,255,255,0.38)">◀</Label>
+      <Label position={[-0.436,   -0.80,  0.143]} size={9} color="rgba(255,255,255,0.38)">▶</Label>
 
       {/* ── A button ──────────────────────────────────────────────────────── */}
       <Btn3D position={[0.59, -0.68, 0.118]} shape="sphere" args={[0.10]} color={C.btnA} soundType="a" />
@@ -387,21 +501,38 @@ function Lights() {
   );
 }
 
+// ── Error boundary — catches WebGL context loss and texture load failures ─────
+class CanvasErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { failed: false }; }
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? null : this.props.children; }
+}
+
 // ── Export ────────────────────────────────────────────────────────────────────
-export default function GameBoy() {
+export default function GameBoy({ introComplete = false }) {
+  // Skip the Canvas entirely for users who prefer reduced motion — avoids
+  // running Three.js animations that would violate their OS accessibility setting.
+  const reducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+  if (reducedMotion) return null;
+
   return (
     <div className="gb-canvas-wrap">
-      <Canvas
-        camera={{ position: [0, 0, 4.8], fov: 40 }}
-        dpr={[1, 2]}
-        gl={{ alpha: true, antialias: true }}
-        style={{ background: 'transparent' }}
-      >
-        <Lights />
-        <Suspense fallback={null}>
-          <GameBoyMesh />
-        </Suspense>
-      </Canvas>
+      <CanvasErrorBoundary>
+        <Canvas
+          camera={{ position: [0, 0, 4.8], fov: 40 }}
+          dpr={[1, 2]}
+          gl={{ alpha: true, antialias: true, powerPreference: 'high-performance', failIfMajorPerformanceCaveat: false }}
+          style={{ background: 'transparent' }}
+        >
+          <Lights />
+          <Suspense fallback={null}>
+            <GameBoyMesh introComplete={introComplete} />
+          </Suspense>
+        </Canvas>
+      </CanvasErrorBoundary>
     </div>
   );
 }

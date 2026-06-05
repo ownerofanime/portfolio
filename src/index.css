@@ -314,6 +314,10 @@ ul, ol {
   .hero-canvas {
     display: none;
   }
+  /* Hide the 3D canvas — JS also skips rendering it entirely */
+  .gb-canvas-wrap {
+    display: none;
+  }
 }
 
 /* ── Buttons ── */
@@ -2268,8 +2272,14 @@ body.nav-open {
   }
 
   .hero-right {
-    min-height: 320px;
+    min-height: 420px;
+    height: 420px;
     order: -1;
+  }
+
+  /* Allow vertical scroll when finger is over the canvas */
+  .gb-canvas-wrap canvas {
+    touch-action: pan-y;
   }
 
   .hero-stats {

@@ -126,7 +126,7 @@ export default function Hero({ introComplete = false }) {
           </div>
         </div>
         <div className="hero-right">
-          <GameBoy />
+          <GameBoy introComplete={introComplete} />
         </div>
       </div>
       <div className="hero-scroll">
