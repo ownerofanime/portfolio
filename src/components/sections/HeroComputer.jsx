@@ -7,6 +7,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Keyboard from '../ui/Keyboard';
+import { goTo } from '../../lib/navigation';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KEYBOARD SOUNDS — Aceternity "CherryMX Black - ABS keycaps" sprite
@@ -1082,8 +1083,8 @@ function processCommand(raw) {
         return { action: null, out: [reply({ type: 'error', text: 'Usage: open [section]' })] };
       if (!valid.includes(target))
         return { action: null, out: [reply({ type: 'error', text: `Unknown section "${target}". Try: ${valid.join(', ')}` })] };
-      const id = target === 'projects' ? 'work' : target;
-      return { action: { type: 'scroll', target: id }, out: [reply({ type: 'success', text: `Navigating to /${target}…` })] };
+      const path = target === 'work' ? '/projects' : `/${target}`;
+      return { action: { type: 'navigate', path }, out: [reply({ type: 'success', text: `Navigating to ${path}…` })] };
     }
 
     case 'neofetch':
@@ -1535,9 +1536,10 @@ export default function HeroComputer({ compact = false }) {
       a.href = url; a.download = 'matthew-tjandera.vcf'; a.click();
       URL.revokeObjectURL(url);
     }
-    if (action?.type === 'scroll') {
-      document.getElementById(action.target)?.scrollIntoView({ behavior: 'smooth' });
+    if (action?.type === 'navigate') {
+      // Each section is its own route now — `open <section>` really navigates.
       unlockAchievement('explorer');
+      goTo(action.path);
     }
     if (action?.type === 'github') {
       Promise.all([

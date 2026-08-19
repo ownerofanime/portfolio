@@ -1,15 +1,17 @@
 // Section — About: personal bio, education history, and profile card.
 
+import { useNavigate } from 'react-router-dom';
 import { useReveal } from '../../hooks/useReveal';
 import ProfileCard from '../ui/ProfileCard';
 
 export default function About() {
   const ref = useReveal();
+  const navigate = useNavigate();
 
   return (
     <section className="section" id="about">
       <div className="container">
-        <div className="section-label">About</div>
+        <div className="section-label">About<span className="section-cart">ABOUT.GB</span></div>
         <div className="about-grid reveal" ref={ref}>
           <div className="about-photo">
             <ProfileCard
@@ -26,9 +28,7 @@ export default function About() {
               behindGlowEnabled
               behindGlowColor="hsla(271, 100%, 70%, 0.6)"
               innerGradient="linear-gradient(145deg,hsla(271, 40%, 45%, 0.55) 0%,hsla(264, 60%, 70%, 0.27) 100%)"
-              onContactClick={() => {
-                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onContactClick={() => navigate('/contact')}
             />
           </div>
           <div className="about-text">

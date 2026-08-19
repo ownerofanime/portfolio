@@ -1,35 +1,25 @@
-// Layout — Nav: sticky pill-style navigation bar with scrollspy, theme toggle, and mobile menu.
-// `sections` drives the IntersectionObserver that highlights the active nav item as you scroll.
+// Layout — Nav: sticky pill-style navigation bar with theme toggle and mobile menu.
+// Now route-driven: the active pill comes from the current URL (NavLink) rather
+// than from a scroll-spy, since each section is its own page.
 
 import { useState, useEffect, useRef } from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
+import { routes, photographyRoute } from '../../lib/routes';
 
-const sections = ['about', 'work', 'experience', 'skills', 'certifications', 'contact'];
+const navItems = [...routes, photographyRoute];
 
-const navItems = [
-  { id: 'about',      label: 'About'      },
-  { id: 'work',       label: 'Work'       },
-  { id: 'experience', label: 'Experience' },
-  { id: 'contact',    label: 'Contact'    },
-];
-
-export default function Nav({ onEnterPhotography }) {
+export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
   const { theme, toggle } = useTheme();
   const popoverRef = useRef(null);
+  const { pathname } = useLocation();
 
+  // Close the mobile menu whenever the route changes
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) setActiveSection(e.target.id); }),
-      { rootMargin: '-40% 0px -50% 0px' }
-    );
-    sections.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, []);
+    setMenuOpen(false);
+    document.body.classList.remove('nav-open');
+  }, [pathname]);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -44,13 +34,6 @@ export default function Nav({ onEnterPhotography }) {
     return () => document.removeEventListener('mousedown', handler);
   }, [menuOpen]);
 
-  const handleClick = (e, id) => {
-    e.preventDefault();
-    setMenuOpen(false);
-    document.body.classList.remove('nav-open');
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const toggleMenu = () => {
     setMenuOpen((v) => !v);
     document.body.classList.toggle('nav-open');
@@ -60,42 +43,27 @@ export default function Nav({ onEnterPhotography }) {
     <nav className="nav">
       <div className="pill-nav-bar">
         {/* ── Logo circle ── */}
-        <a
-          href="#"
-          className="pill-logo"
-          onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-          aria-label="Back to top"
-        >
+        <Link to="/" className="pill-logo" aria-label="Home">
           MT
-        </a>
+        </Link>
 
         {/* ── Desktop pill items ── */}
         <div className="pill-nav-items desktop-only">
           <ul className="pill-list">
             {navItems.map((item) => (
-              <li key={item.id}>
-                <a
-                  href={`#${item.id}`}
-                  className={`pill${activeSection === item.id ? ' is-active' : ''}`}
-                  onClick={(e) => handleClick(e, item.id)}
+              <li key={item.path}>
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) => `pill${isActive ? ' is-active' : ''}`}
                 >
                   <span className="hover-circle" />
                   <span className="label-stack">
                     <span className="pill-label">{item.label}</span>
                     <span className="pill-label-hover">{item.label}</span>
                   </span>
-                </a>
+                </NavLink>
               </li>
             ))}
-            <li>
-              <button className="pill pill-photo" onClick={onEnterPhotography}>
-                <span className="hover-circle" />
-                <span className="label-stack">
-                  <span className="pill-label">Photos</span>
-                  <span className="pill-label-hover">Photos</span>
-                </span>
-              </button>
-            </li>
           </ul>
         </div>
 
@@ -138,25 +106,12 @@ export default function Nav({ onEnterPhotography }) {
         <div className="mobile-menu-popover open" ref={popoverRef}>
           <ul className="mobile-menu-list">
             {navItems.map((item) => (
-              <li key={item.id}>
-                <a
-                  href={`#${item.id}`}
-                  className="mobile-menu-link"
-                  onClick={(e) => handleClick(e, item.id)}
-                >
+              <li key={item.path}>
+                <NavLink to={item.path} className="mobile-menu-link">
                   {item.label}
-                </a>
+                </NavLink>
               </li>
             ))}
-            <li>
-              <button
-                className="mobile-menu-link"
-                style={{ width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer' }}
-                onClick={() => { setMenuOpen(false); document.body.classList.remove('nav-open'); onEnterPhotography(); }}
-              >
-                Photos ↗
-              </button>
-            </li>
             <li>
               <a href="/matthew_resume_tech.docx" download="matthew_resume_tech.docx" className="mobile-menu-link">
                 Resume ↗

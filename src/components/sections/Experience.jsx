@@ -10,7 +10,7 @@ export default function Experience() {
   return (
     <section className="section" id="experience">
       <div className="container">
-        <div className="section-label">Experience</div>
+        <div className="section-label">Experience<span className="section-cart">EXPERIENCE.GB</span></div>
         <h2 className="section-title">Where I've worked.</h2>
 
         <div className="timeline reveal" ref={ref} style={{ marginTop: 48 }}>

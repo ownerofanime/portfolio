@@ -126,7 +126,7 @@ export default function Projects() {
   return (
     <section className="section" id="work">
       <div className="container">
-        <div className="section-label">Projects & Hackathons</div>
+        <div className="section-label">Projects & Hackathons<span className="section-cart">PROJECTS.GB</span></div>
         <h2 className="section-title">Things I've shipped.</h2>
         <p className="section-subtitle">
           Eight hackathon builds across fintech, logistics, AR, mobile, and data. Each built under pressure, with a team, against a deadline.

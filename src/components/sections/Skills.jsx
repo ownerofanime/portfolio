@@ -22,7 +22,7 @@ export default function Skills() {
   return (
     <section className="section" id="skills">
       <div className="container">
-        <div className="section-label">Skills</div>
+        <div className="section-label">Skills<span className="section-cart">SKILLS.GB</span></div>
         <h2 className="section-title">What I actually know.</h2>
         <p className="section-subtitle">
           Skills proven through shipped projects and certifications — not just coursework.

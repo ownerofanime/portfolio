@@ -189,7 +189,7 @@ export default function Certifications() {
   return (
     <section className="section" id="certifications">
       <div className="container">
-        <div className="section-label">Certifications</div>
+        <div className="section-label">Certifications<span className="section-cart">CERTS.GB</span></div>
         <h2 className="section-title">Certified & Learning.</h2>
         <div className="cert-tabs">
           {tabs.map((tab) => (

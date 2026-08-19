@@ -283,26 +283,16 @@ ul, ol {
 }
 
 /* ── Reveal Animations ── */
+/* Initial hidden state only — motion is scroll-linked via GSAP ScrollTrigger
+   (see hooks/useReveal.js); no CSS transitions or the scrub would fight them. */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .reveal-child {
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
-}
-
-.reveal-child.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -315,7 +305,9 @@ ul, ol {
     display: none;
   }
   /* Hide the 3D canvas — JS also skips rendering it entirely */
-  .gb-canvas-wrap {
+  .gb-canvas-wrap,
+  .gb-stage,
+  .scroll-progress {
     display: none;
   }
 }
@@ -892,7 +884,9 @@ body.nav-open {
 
 .hero-split {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  /* let pointer events fall through to the 3-D canvas; hero-left re-enables */
+  pointer-events: none;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 24px;
@@ -907,15 +901,16 @@ body.nav-open {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  pointer-events: auto;
 }
 
-.hero-right {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 640px;
-  height: 680px;
+/* Full-bleed 3-D stage inside the Home hero. The cartridge swap plays across
+   the whole hero, behind the text (which sits at z-index 2). On mobile this
+   becomes an inline block above the text — see the max-width:768 block. */
+.gb-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 /* ── Game Boy 3-D canvas ──────────────────────────────────────── */
@@ -1054,7 +1049,15 @@ body.nav-open {
   gap: 6px;
   color: var(--fg-faint);
   animation: float 2s ease-in-out infinite;
-  z-index: 1;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-scroll-text {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
 .hero-scroll svg {
@@ -2271,9 +2274,13 @@ body.nav-open {
     gap: 32px;
   }
 
-  .hero-right {
-    min-height: 420px;
+  /* On mobile the Game Boy is a regular block above the text — the pinned
+     scroll + travel animation is desktop-only (see App.jsx / Hero.jsx). */
+  .gb-stage {
+    position: relative;
+    inset: auto;
     height: 420px;
+    min-height: 420px;
     order: -1;
   }
 
@@ -3870,3 +3877,218 @@ body.nav-open {
 .hc-compact .hc-success        { color: var(--hc-success); }
 .hc-compact .hc-compact-input { border-top-color: var(--hc-border); }
 .hc-compact .hc-output::-webkit-scrollbar-thumb { background: var(--hc-accent); }
+
+/* ── Scroll progress — retro segmented loading bar (cartridge theme) ── */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 300;
+  pointer-events: none;
+}
+
+.scroll-progress-fill {
+  height: 100%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: repeating-linear-gradient(90deg, #6366f1 0 10px, transparent 10px 13px);
+}
+
+/* ── Section cartridge tags — tie sections to the hero cartridge story ── */
+.section-cart {
+  margin-left: 10px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.75em;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--fg-faint);
+}
+
+.section-cart::before {
+  content: '▸ ';
+  color: #6366f1;
+}
+
+
+/* ── Multi-page shell ──────────────────────────────────────────────────
+   Each route renders one <main class="page">. The route-view wrapper is
+   keyed by pathname in App.jsx, so this animation replays on every
+   navigation, giving a consistent "cartridge loaded" feel between pages. */
+/* Opacity only — deliberately no transform. A transformed ancestor becomes the
+   containing block for position:fixed, which breaks the hero's ScrollTrigger
+   pin. The per-page intro (usePageIntro) supplies the movement instead. */
+.route-view {
+  animation: routeIn 0.42s var(--ease) both;
+}
+
+@keyframes routeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Content pages start below the fixed nav; Home's hero handles its own. */
+.page > .section:first-child {
+  padding-top: calc(var(--nav-height) + 72px);
+}
+
+.page-home > .section:first-child {
+  padding-top: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-view { animation: none; }
+}
+
+/* ── Cartridge shelf (Home route picker) ──────────────────────────── */
+.cart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 44px;
+}
+
+.cart-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-secondary);
+  overflow: hidden;
+  transition: transform 0.28s var(--ease), border-color 0.28s var(--ease),
+              box-shadow 0.28s var(--ease);
+}
+
+.cart-card:hover {
+  transform: translateY(-6px);
+  border-color: #6366f1;
+  box-shadow: 0 14px 34px rgba(99, 102, 241, 0.18);
+}
+
+/* The ridged top edge that reads as a cartridge lip */
+.cart-card-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 30px;
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.22), transparent);
+  border-bottom: 1px solid var(--border);
+}
+
+.cart-card-ridge {
+  width: 44px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--fg-faint);
+  opacity: 0.45;
+}
+
+.cart-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+}
+
+.cart-card-no,
+.cart-card-name,
+.cart-card-load {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  letter-spacing: 0.16em;
+}
+
+.cart-card-no {
+  font-size: 10px;
+  color: var(--fg-faint);
+}
+
+.cart-card-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6366f1;
+}
+
+.cart-card-label {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+
+.cart-card-blurb {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--fg-muted, var(--fg-faint));
+}
+
+.cart-card-load {
+  margin-top: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--fg-faint);
+  transition: color 0.28s var(--ease), transform 0.28s var(--ease);
+}
+
+.cart-card:hover .cart-card-load {
+  color: #6366f1;
+  transform: translateX(4px);
+}
+
+/* ── Prev / next page pager ───────────────────────────────────────── */
+.page-pager {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px 120px;
+}
+
+.page-pager-link {
+  flex: 1 1 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: transform 0.28s var(--ease), border-color 0.28s var(--ease);
+}
+
+.page-pager-link:hover {
+  transform: translateY(-4px);
+  border-color: #6366f1;
+}
+
+.page-pager-next {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.page-pager-dir,
+.page-pager-cart {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--fg-faint);
+}
+
+.page-pager-name {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.page-pager-cart {
+  color: #6366f1;
+}
+
+@media (max-width: 768px) {
+  .page > .section:first-child {
+    padding-top: calc(var(--nav-height) + 40px);
+  }
+  .page-pager { padding-bottom: 80px; }
+}

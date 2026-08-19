@@ -42,7 +42,7 @@ export default function Contact() {
   return (
     <section className="section" id="contact">
       <div className="container">
-        <div className="section-label">Contact</div>
+        <div className="section-label">Contact<span className="section-cart">CONTACT.GB</span></div>
         <h2 className="section-title">Let's build something together.</h2>
         <div className="contact-grid reveal" ref={ref} style={{ marginTop: 48 }}>
           <div>
