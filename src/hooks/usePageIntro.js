@@ -39,24 +39,28 @@ const VARIANTS = {
       }, 0.06);
   },
 
-  // Projects — dealing a hand of cards onto the table.
+  // Projects — dealing a hand of cards onto the table, then the hackathon
+  // record and GitHub strip settle in underneath.
   deal: (tl, q) => {
     tl.from(q('.featured-grid > *, .projects-grid > *'), {
       autoAlpha: 0, y: 76, rotateZ: (i) => (i % 2 ? 5 : -5), scale: 0.94,
       duration: 0.62, stagger: 0.075, ease: 'back.out(1.5)',
-    }, 0);
+    }, 0)
+      .from(q('.hackathon-list-wrap, .github-strip'), {
+        autoAlpha: 0, y: 32, duration: 0.5, stagger: 0.1, ease: 'power2.out',
+      }, 0.35);
   },
 
-  // Skills — chips powering up, tier by tier.
-  // Transform only: the .skills-tiers container already runs its own CSS
-  // opacity transition, so fading the chips as well would be two systems
-  // fighting over the same pixels (and could leave them stuck invisible).
+  // Skills — chips powering up, tier by tier. No overshoot easing here: a
+  // back.out() bounce briefly scales text past 100%, and text mid-transform
+  // renders blurred/smeared in most browsers — looks like a rendering glitch
+  // in a screenshot. power2.out keeps the same pop without that artifact.
   powerup: (tl, q) => {
     tl.from(q('.skills-tier-header'), {
-      x: -22, duration: 0.45, stagger: 0.14, ease: 'power2.out',
+      autoAlpha: 0, x: -22, duration: 0.45, stagger: 0.14, ease: 'power2.out',
     }, 0)
       .from(q('.skill-tag'), {
-        scale: 0.55, duration: 0.44, stagger: 0.028, ease: 'back.out(2.2)',
+        autoAlpha: 0, scale: 0.75, duration: 0.4, stagger: 0.025, ease: 'power2.out',
       }, 0.1);
   },
 
@@ -78,13 +82,6 @@ const VARIANTS = {
       }, 0.12);
   },
 
-  // Home — the cartridge shelf snapping onto its rails.
-  shelf: (tl, q) => {
-    tl.from(q('.cart-card'), {
-      autoAlpha: 0, y: 40, scale: 0.9, duration: 0.5, stagger: 0.06,
-      ease: 'back.out(1.7)',
-    }, 0);
-  },
 };
 
 export function usePageIntro(variant) {

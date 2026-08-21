@@ -2,7 +2,6 @@
 // Edit src/data/certifications.js to add certificates. Each entry can have a `pdf` link.
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { useReveal } from '../../hooks/useReveal';
 import { certifications } from '../../data/certifications';
 import BorderGlow from '../ui/BorderGlow';
 
@@ -148,7 +147,6 @@ export default function Certifications() {
   const [active, setActive] = useState('All');
   const [lightbox, setLightbox] = useState(null);
   const [lightboxImgIdx, setLightboxImgIdx] = useState(0);
-  const ref = useReveal();
 
   const filtered = active === 'All'
     ? certifications
@@ -202,7 +200,7 @@ export default function Certifications() {
             </button>
           ))}
         </div>
-        <div className="cert-grid reveal" ref={ref}>
+        <div className="cert-grid">
           {filtered.map((cert, i) => {
             const imgs = getImages(cert);
             const isScholarship = cert.category === 'Scholarships';

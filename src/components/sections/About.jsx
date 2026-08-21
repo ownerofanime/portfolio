@@ -1,18 +1,17 @@
 // Section — About: personal bio, education history, and profile card.
 
 import { useNavigate } from 'react-router-dom';
-import { useReveal } from '../../hooks/useReveal';
 import ProfileCard from '../ui/ProfileCard';
 
+// Entrance animation is owned by usePageIntro's 'dossier' variant (see AboutPage.jsx).
 export default function About() {
-  const ref = useReveal();
   const navigate = useNavigate();
 
   return (
     <section className="section" id="about">
       <div className="container">
         <div className="section-label">About<span className="section-cart">ABOUT.GB</span></div>
-        <div className="about-grid reveal" ref={ref}>
+        <div className="about-grid">
           <div className="about-photo">
             <ProfileCard
               avatarUrl="/new photo.png"

@@ -282,21 +282,8 @@ ul, ol {
   margin-bottom: 48px;
 }
 
-/* ── Reveal Animations ── */
-/* Initial hidden state only — motion is scroll-linked via GSAP ScrollTrigger
-   (see hooks/useReveal.js); no CSS transitions or the scrub would fight them. */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-}
-
-.reveal-child {
-  opacity: 0;
-  transform: translateY(16px);
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal-child, .hero-row {
+  .hero-row {
     opacity: 1;
     transform: none;
     transition: none;
@@ -2681,19 +2668,14 @@ body.nav-open {
 }
 
 /* ── Skills Tiers ── */
+/* Entrance animation is GSAP-owned (usePageIntro's 'powerup' variant) — no
+   static hidden state here, so a stalled/interrupted transition can never
+   leave this stuck at partial opacity. */
 .skills-tiers {
   display: flex;
   flex-direction: column;
   gap: 40px;
   margin-top: 0;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
-}
-
-.skills-tiers.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .skills-tier-header {
@@ -3942,44 +3924,88 @@ body.nav-open {
   .route-view { animation: none; }
 }
 
-/* ── Cartridge shelf (Home route picker) ──────────────────────────── */
-.cart-grid {
+/* ── Route card-swap deck (Home route picker) ─────────────────────────
+   Built on react-bits CardSwap (src/components/ui/CardSwap/) — that
+   component owns position/transform/animation on .cardswap-card; everything
+   below only touches cosmetics + our own content layout inside each card.
+   (.cardswap-card is a local rename of the registry's plain `.card` — see
+   the comment in CardSwap.jsx for why: an unscoped `.card` collided with
+   this site's own pre-existing `.card` class and broke unrelated cards
+   elsewhere on the site.)
+   Selectors that override a base .cardswap-card declaration (border,
+   background) use the combined `.cardswap-card.route-card` form so they win
+   on specificity regardless of CSS import order, rather than relying on
+   cascade position. */
+.route-swap-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
   margin-top: 44px;
 }
 
-.cart-card {
+.route-swap-intro .section-label,
+.route-swap-intro .section-title,
+.route-swap-intro .section-subtitle {
+  margin-bottom: 0;
+}
+.route-swap-intro .section-label { margin-bottom: 16px; }
+.route-swap-intro .section-title { margin-bottom: 16px; }
+
+/* Sized box the CardSwap deck anchors into (bottom-right, per the library's
+   own layout) — must have an explicit height since the deck's cards are
+   position:absolute and contribute nothing to normal document flow. */
+.route-swap-stage {
   position: relative;
+  height: 500px;
+  min-width: 320px;
+}
+
+/* Base look — also used standalone (no .cardswap-card) by the reduced-motion
+   static grid below, so it needs its own complete border/background/radius. */
+.route-card {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--bg-secondary);
   overflow: hidden;
-  transition: transform 0.28s var(--ease), border-color 0.28s var(--ease),
-              box-shadow 0.28s var(--ease);
+  cursor: pointer;
+  color: var(--fg);
+  text-decoration: none;
+  transition: transform 0.28s var(--ease), border-color 0.28s var(--ease);
 }
 
-.cart-card:hover {
-  transform: translateY(-6px);
+/* Guaranteed override for the animated case: combined-class specificity
+   beats a bare .cardswap-card rule regardless of which stylesheet loaded last. */
+.cardswap-card.route-card {
+  border-color: var(--border);
+  background: var(--bg-secondary);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.route-card:hover,
+.route-card:focus-visible {
   border-color: #6366f1;
-  box-shadow: 0 14px 34px rgba(99, 102, 241, 0.18);
 }
 
-/* The ridged top edge that reads as a cartridge lip */
-.cart-card-slot {
+.route-card:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 3px;
+}
+
+.route-card-strip {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   height: 30px;
+  flex-shrink: 0;
   background: linear-gradient(180deg, rgba(99, 102, 241, 0.22), transparent);
   border-bottom: 1px solid var(--border);
 }
 
-.cart-card-ridge {
+.route-card-ridge {
   width: 44px;
   height: 5px;
   border-radius: 3px;
@@ -3987,55 +4013,78 @@ body.nav-open {
   opacity: 0.45;
 }
 
-.cart-card-body {
+.route-card-body {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 20px;
+  padding: 22px 24px;
+  flex: 1;
+  min-height: 0;
 }
 
-.cart-card-no,
-.cart-card-name,
-.cart-card-load {
+.route-card-no,
+.route-card-cart,
+.route-card-load {
   font-family: 'SF Mono', 'Fira Code', monospace;
   letter-spacing: 0.16em;
 }
 
-.cart-card-no {
+.route-card-no {
   font-size: 10px;
   color: var(--fg-faint);
 }
 
-.cart-card-name {
+.route-card-cart {
   font-size: 11px;
   font-weight: 700;
   color: #6366f1;
 }
 
-.cart-card-label {
-  font-size: 21px;
+.route-card-title {
+  font-size: 26px;
   font-weight: 700;
   letter-spacing: -0.01em;
   margin-top: 2px;
 }
 
-.cart-card-blurb {
-  font-size: 13px;
+.route-card-blurb {
+  font-size: 14px;
   line-height: 1.5;
-  color: var(--fg-muted, var(--fg-faint));
+  color: var(--fg-faint);
 }
 
-.cart-card-load {
-  margin-top: 12px;
+.route-card-load {
+  margin-top: auto;
+  padding-top: 12px;
   font-size: 10px;
   font-weight: 700;
-  color: var(--fg-faint);
-  transition: color 0.28s var(--ease), transform 0.28s var(--ease);
+  color: #6366f1;
 }
 
-.cart-card:hover .cart-card-load {
-  color: #6366f1;
-  transform: translateX(4px);
+/* Reduced-motion fallback: a plain, non-animated grid of the same cards. */
+.route-static-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.route-static-grid .route-card {
+  height: 230px;
+  box-shadow: none;
+}
+
+.route-static-grid .route-card:hover {
+  transform: translateY(-4px);
+}
+
+@media (max-width: 900px) {
+  .route-swap-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .route-swap-stage {
+    height: 380px;
+  }
 }
 
 /* ── Prev / next page pager ───────────────────────────────────────── */

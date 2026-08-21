@@ -1,24 +1,11 @@
 // Section — Skills: three-tier skill display (Proficient / Familiar / Platforms & Tools).
 // Edit src/data/skills.js to update skills, contexts, and categories.
+// Entrance animation is owned entirely by usePageIntro's 'powerup' variant
+// (see SkillsPage.jsx) — this component renders plain, always-visible markup.
 
-import { useState, useEffect, useRef } from 'react';
 import { skills } from '../../data/skills';
 
 export default function Skills() {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.unobserve(el); } },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section className="section" id="skills">
       <div className="container">
@@ -27,7 +14,7 @@ export default function Skills() {
         <p className="section-subtitle">
           Skills proven through shipped projects and certifications — not just coursework.
         </p>
-        <div className={`skills-tiers ${visible ? 'visible' : ''}`} ref={ref}>
+        <div className="skills-tiers">
           <div className="skills-tier">
             <div className="skills-tier-header">
               <span className="skills-tier-label">Proficient</span>

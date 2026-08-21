@@ -1,19 +1,17 @@
 // Section — Experience: timeline of work roles with bullet descriptions.
 // Edit src/data/experience.js to add or update roles.
 
-import { useReveal } from '../../hooks/useReveal';
 import { experience } from '../../data/experience';
 
+// Entrance animation is owned by usePageIntro's 'timeline' variant (see ExperiencePage.jsx).
 export default function Experience() {
-  const ref = useReveal();
-
   return (
     <section className="section" id="experience">
       <div className="container">
         <div className="section-label">Experience<span className="section-cart">EXPERIENCE.GB</span></div>
         <h2 className="section-title">Where I've worked.</h2>
 
-        <div className="timeline reveal" ref={ref} style={{ marginTop: 48 }}>
+        <div className="timeline" style={{ marginTop: 48 }}>
           {experience.map((exp, i) => (
             <div key={i} className="timeline-item">
               <div className={`timeline-dot ${exp.current ? 'current' : ''}`} />

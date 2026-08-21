@@ -4,7 +4,6 @@
 // Add a `caseStudy: { problem, approach, result }` object to enable the Case Study modal.
 
 import { useState, useEffect } from 'react';
-import { useReveal } from '../../hooks/useReveal';
 import { projects, hackathonRecord } from '../../data/projects';
 import BorderGlow from '../ui/BorderGlow';
 import LogoLoop from '../ui/LogoLoop';
@@ -104,12 +103,10 @@ function ProjectCard({ p, onCaseStudy }) {
   );
 }
 
+// Entrance animation is owned by usePageIntro's 'deal' variant (see ProjectsPage.jsx).
 export default function Projects() {
   const [active, setActive] = useState('All');
   const [caseStudy, setCaseStudy] = useState(null);
-  const ref = useReveal();
-  const tableRef = useReveal();
-  const githubRef = useReveal();
 
   const featuredProjects = projects.filter((p) => p.featured);
   const filtered = active === 'All'
@@ -181,13 +178,13 @@ export default function Projects() {
           </div>
         )}
 
-        <div className="projects-grid reveal" ref={ref}>
+        <div className="projects-grid">
           {filtered.map((p) => (
             <ProjectCard key={p.id} p={p} onCaseStudy={setCaseStudy} />
           ))}
         </div>
 
-        <div className="hackathon-list-wrap reveal" ref={tableRef}>
+        <div className="hackathon-list-wrap">
           <div className="hackathon-list-header">
             <span className="section-label" style={{ marginBottom: 0 }}>Full Hackathon Record</span>
             <span className="hackathon-list-count">{hackathonRecord.length} events</span>
@@ -212,7 +209,7 @@ export default function Projects() {
           />
         </div>
 
-        <div className="github-strip reveal" ref={githubRef}>
+        <div className="github-strip">
           <div className="github-strip-left">
             <div className="section-label" style={{ marginBottom: 4 }}>Code & Open Source</div>
             <h3 className="github-strip-title">Building in public</h3>

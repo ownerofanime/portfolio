@@ -1,18 +1,22 @@
 // Route: / — the landing screen. Keeps the pinned 3-D Game Boy cartridge-swap
-// (the site's signature moment), then hands off to the cartridge shelf, which
-// is how you reach every other page.
+// (the site's signature moment), then hands off to the route card-swap deck,
+// which is how you reach every other page.
 
 import Hero from '../components/sections/Hero';
-import CartridgeShelf from '../components/sections/CartridgeShelf';
+import RouteCardSwap from '../components/sections/RouteCardSwap';
 import { usePageIntro } from '../hooks/usePageIntro';
 
 export default function Home({ introComplete }) {
-  const ref = usePageIntro('shelf');
+  // No page-specific variant: CardSwap runs its own entrance/cycle animation
+  // the moment it mounts, so layering a second GSAP reveal on the same cards
+  // would just be two systems fighting over the same elements. The shared
+  // header-line animation (see usePageIntro) still plays for the intro copy.
+  const ref = usePageIntro();
 
   return (
     <main className="page page-home" ref={ref}>
       <Hero introComplete={introComplete} />
-      <CartridgeShelf />
+      <RouteCardSwap />
     </main>
   );
 }

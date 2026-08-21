@@ -2,7 +2,6 @@
 // Form submissions are sent via Formspree (no backend needed).
 
 import { useState } from 'react';
-import { useReveal } from '../../hooks/useReveal';
 
 // To change the form destination: go to formspree.io, create a new form, and paste the endpoint here.
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvgzpjkq';
@@ -14,8 +13,8 @@ const links = [
   { label: 'Phone', value: '+65 8980 6759', href: 'tel:+6589806759' },
 ];
 
+// Entrance animation is owned by usePageIntro's 'boot' variant (see ContactPage.jsx).
 export default function Contact() {
-  const ref = useReveal();
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
   const [form, setForm] = useState({ name: '', email: '', message: '' });
 
@@ -44,7 +43,7 @@ export default function Contact() {
       <div className="container">
         <div className="section-label">Contact<span className="section-cart">CONTACT.GB</span></div>
         <h2 className="section-title">Let's build something together.</h2>
-        <div className="contact-grid reveal" ref={ref} style={{ marginTop: 48 }}>
+        <div className="contact-grid" style={{ marginTop: 48 }}>
           <div>
             <p className="contact-note">
               Open to internships, project collaborations, and hackathon teams. Based in Singapore.
